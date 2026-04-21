@@ -1,52 +1,38 @@
 import React from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import {
+  Button,
+  AppBar,
+  Typography,
+  IconButton,
+  Toolbar,
+  Box,
+  Stack,
+} from '@mui/material';
 
 const NavBar: React.FC = () => {
   const { user } = useAuth();
 
   return (
-    <nav className="navbar navbar-dark bg-black border-bottom border-secondary">
-      <div className="container">
-        <Link className="navbar-brand" to="/">
-          <img
-            src="/logo.png"
-            alt="Logo"
-            width="100"
-            height="100"
-            className="d-inline-block align-top me-2"
-          />
-        </Link>
-
-        <div className="navbar-nav flex-row me-auto gap-3 fs-5">
-          <NavLink className="nav-link" to="/" end>
-            Store
+    <Box sx={{ flexGrow: 1 }}>
+      <AppBar position="static">
+        <Toolbar>
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+            Tokito
+          </Typography>
+          <NavLink to="/">
+            <Button>Store</Button>
           </NavLink>
-          <NavLink className="nav-link" to="/catalog">
-            Catalog
+          <NavLink to="/library">
+            <Button>Library</Button>
           </NavLink>
-          <NavLink className="nav-link" to="/library">
-            Library
+          <NavLink to="/login">
+            <Button color="inherit">Login</Button>
           </NavLink>
-        </div>
-
-        {user ? (
-          <Link to="/profile">
-            <img
-              src="/user-icon.png"
-              alt="User Profile"
-              width="40"
-              height="40"
-              className="rounded-circle border border-secondary"
-            />
-          </Link>
-        ) : (
-          <Link className="btn btn-outline-info" to="/login">
-            Login
-          </Link>
-        )}
-      </div>
-    </nav>
+        </Toolbar>
+      </AppBar>
+    </Box>
   );
 };
 

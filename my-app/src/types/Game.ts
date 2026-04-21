@@ -2,7 +2,7 @@ export interface Game {
   gameId: number;
   name: string;
   imageUrl: string;
-  description: string;
+  desription: string;
   releaseDate: string;
   publisherName: string;
   publisher: string;

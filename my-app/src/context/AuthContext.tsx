@@ -23,7 +23,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const refreshUser = async () => {
     try {
       const { data } = await api.get<User>('/auth/status');
-      alert('User refreshed: ' + JSON.stringify(data));
       setUser(data);
       return data;
     } catch {

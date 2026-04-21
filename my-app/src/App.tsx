@@ -16,6 +16,22 @@ const darkTheme = createTheme({
   palette: {
     mode: 'dark',
   },
+  components: {
+    MuiCard: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          boxShadow: theme.shadows[6],
+          transition: theme.transitions.create('box-shadow', {
+            duration: theme.transitions.duration.shortest,
+            easing: theme.transitions.easing.easeOut,
+          }),
+          '&:hover': {
+            boxShadow: theme.shadows[12],
+          },
+        }),
+      },
+    },
+  },
 });
 function App() {
   return (
