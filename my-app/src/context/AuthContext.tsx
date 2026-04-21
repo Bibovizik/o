@@ -1,6 +1,6 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
-import type { User } from "../types/User";
-import { api } from "../api/axios";
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import type { User } from '../types/User';
+import { api } from '../api/axios';
 
 interface AuthContextType {
   user: User | null;
@@ -12,7 +12,9 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const login = (userData: User) => setUser(userData);
@@ -20,8 +22,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const refreshUser = async () => {
     try {
-      const { data } = await api.get<User>("/auth/status");
-      alert("User refreshed: " + JSON.stringify(data)); 
+      const { data } = await api.get<User>('/auth/status');
+      alert('User refreshed: ' + JSON.stringify(data));
       setUser(data);
       return data;
     } catch {
@@ -43,6 +45,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (!context) throw new Error("useAuth must be used within AuthProvider");
+  if (!context) throw new Error('useAuth must be used within AuthProvider');
   return context;
 };

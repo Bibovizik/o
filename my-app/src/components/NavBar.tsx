@@ -8,7 +8,6 @@ const NavBar: React.FC = () => {
   return (
     <nav className="navbar navbar-dark bg-black border-bottom border-secondary">
       <div className="container">
-
         <Link className="navbar-brand" to="/">
           <img
             src="/logo.png"
@@ -20,9 +19,15 @@ const NavBar: React.FC = () => {
         </Link>
 
         <div className="navbar-nav flex-row me-auto gap-3 fs-5">
-          <NavLink className="nav-link" to="/" end>Store</NavLink>
-          <NavLink className="nav-link" to="/catalog">Catalog</NavLink>
-          <NavLink className="nav-link" to="/library">Library</NavLink>
+          <NavLink className="nav-link" to="/" end>
+            Store
+          </NavLink>
+          <NavLink className="nav-link" to="/catalog">
+            Catalog
+          </NavLink>
+          <NavLink className="nav-link" to="/library">
+            Library
+          </NavLink>
         </div>
 
         {user ? (
@@ -36,9 +41,10 @@ const NavBar: React.FC = () => {
             />
           </Link>
         ) : (
-          <Link className="btn btn-outline-info" to="/login">Login</Link>
+          <Link className="btn btn-outline-info" to="/login">
+            Login
+          </Link>
         )}
-
       </div>
     </nav>
   );

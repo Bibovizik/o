@@ -5,14 +5,13 @@ import { api } from '../api/axios';
 import { isAxiosError } from 'axios';
 import type { User } from '../types/User';
 
-
 const isUser = (value: unknown): value is User => {
   return (
-    typeof value === "object" &&
+    typeof value === 'object' &&
     value !== null &&
-    "id" in value &&
-    "username" in value &&
-    "email" in value
+    'id' in value &&
+    'username' in value &&
+    'email' in value
   );
 };
 const Login = () => {
@@ -33,7 +32,10 @@ const Login = () => {
     setErrorMessage('');
 
     try {
-      const response = await api.post<unknown>('/user/login', { email, password });
+      const response = await api.post<unknown>('/user/login', {
+        email,
+        password,
+      });
       const user = isUser(response.data) ? response.data : await refreshUser();
 
       if (user) {
@@ -49,7 +51,9 @@ const Login = () => {
       if (isAxiosError(error) && error.response?.status === 401) {
         setErrorMessage('Invalid email or password.');
       } else {
-        setErrorMessage('Login failed. Check the API connection and try again.');
+        setErrorMessage(
+          'Login failed. Check the API connection and try again.',
+        );
       }
     } finally {
       setIsSubmitting(false);
@@ -62,15 +66,26 @@ const Login = () => {
         style={{ maxWidth: '440px' }}
       >
         <div className="text-center mb-4">
-          <h2 className="fw-bold text-white" style={{ letterSpacing: '3px' }}>TOKITO</h2>
+          <h2 className="fw-bold text-white" style={{ letterSpacing: '3px' }}>
+            TOKITO
+          </h2>
           <p className="text-secondary mb-0">Welcome back to the store</p>
         </div>
 
         <hr className="border-secondary" />
 
-        <form onSubmit={(e) => { e.preventDefault(); void handleLogin(); }} className="mt-4">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            void handleLogin();
+          }}
+          className="mt-4"
+        >
           <div className="mb-3">
-            <label htmlFor="email" className="form-label text-secondary small text-uppercase">
+            <label
+              htmlFor="email"
+              className="form-label text-secondary small text-uppercase"
+            >
               Email Address
             </label>
             <input
@@ -84,7 +99,10 @@ const Login = () => {
           </div>
 
           <div className="mb-4">
-            <label htmlFor="password" className="form-label text-secondary small text-uppercase">
+            <label
+              htmlFor="password"
+              className="form-label text-secondary small text-uppercase"
+            >
               Password
             </label>
             <input
@@ -109,7 +127,10 @@ const Login = () => {
             disabled={isSubmitting}
           >
             {isSubmitting ? (
-              <><span className="spinner-border spinner-border-sm me-2" />Signing in…</>
+              <>
+                <span className="spinner-border spinner-border-sm me-2" />
+                Signing in…
+              </>
             ) : (
               'Sign In'
             )}

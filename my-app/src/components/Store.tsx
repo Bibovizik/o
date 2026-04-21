@@ -1,7 +1,7 @@
-import { isAxiosError } from "axios";
-import { useEffect, useState } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { API_ORIGIN, api } from "../api/axios";
+import { isAxiosError } from 'axios';
+import { useEffect, useState } from 'react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { API_ORIGIN, api } from '../api/axios';
 import '../App.css';
 
 interface Game {
@@ -24,7 +24,9 @@ const Store = () => {
     const loadGames = async () => {
       try {
         if (genreFilter) {
-          const { data } = await api.get<Game[]>(`/games/genres/${genreFilter}`);
+          const { data } = await api.get<Game[]>(
+            `/games/genres/${genreFilter}`,
+          );
           setGames(data);
         } else {
           // Otherwise, load all games normally
@@ -38,7 +40,6 @@ const Store = () => {
 
     void loadGames();
   }, [genreFilter]);
-
 
   const handleTestApi = async () => {
     try {
@@ -68,9 +69,9 @@ const Store = () => {
     } catch (error) {
       console.error('Error searching by genre:', error);
     }
-  }
-  const filteredGames = games.filter(game =>
-    game.name.toLowerCase().includes(searchTerm.toLowerCase())
+  };
+  const filteredGames = games.filter((game) =>
+    game.name.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   return (
@@ -83,12 +84,15 @@ const Store = () => {
             type="text"
             className="form-control mb-4"
             placeholder="Search games..."
-            style={{ backgroundColor: '#2a475e', border: 'none', color: '#c7d5e0' }}
+            style={{
+              backgroundColor: '#2a475e',
+              border: 'none',
+              color: '#c7d5e0',
+            }}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-
 
         {/* Optional: Show the user what genre they are currently filtering by */}
         {genreFilter && (
@@ -105,26 +109,41 @@ const Store = () => {
           </div>
         )}
 
-        <button className="btn btn-secondary mb-4" onClick={handleTestApi}>Test API</button>
-        <button className="btn btn-secondary mb-4 ms-2" onClick={handleAdminTest}>Test Admin API</button>
+        <button className="btn btn-secondary mb-4" onClick={handleTestApi}>
+          Test API
+        </button>
+        <button
+          className="btn btn-secondary mb-4 ms-2"
+          onClick={handleAdminTest}
+        >
+          Test Admin API
+        </button>
 
         <div className="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4">
           {filteredGames.map((game) => (
             <Link to={`/game/${game.gameId}`} className="text-decoration-none">
               <div key={game.gameId} className="col">
-                <div className="p-3 rounded h-100 d-flex flex-column" style={{ backgroundColor: '#2a475e' }}>
+                <div
+                  className="p-3 rounded h-100 d-flex flex-column"
+                  style={{ backgroundColor: '#2a475e' }}
+                >
                   <img
                     src={`${API_ORIGIN}${game.imageUrl}`}
                     alt={game.name}
                     className="mb-3"
-                    style={{ width: '100%', height: 'auto', aspectRatio: '16/9', objectFit: 'cover', borderRadius: '8px' }}
+                    style={{
+                      width: '100%',
+                      height: 'auto',
+                      aspectRatio: '16/9',
+                      objectFit: 'cover',
+                      borderRadius: '8px',
+                    }}
                   />
                   <h3 className="text-white fs-5">{game.name}</h3>
                 </div>
               </div>
             </Link>
-          ))
-          }
+          ))}
         </div>
 
         {filteredGames.length === 0 && games.length > 0 && (

@@ -19,7 +19,7 @@ export interface GameReview {
   userId: number;
   score: number;
   review: string | null; // Nullable to match backend string?
-  ratedAt: string;       // JSON parses dates as strings
+  ratedAt: string; // JSON parses dates as strings
 }
 export interface GameGenre {
   name: string;
