@@ -16,7 +16,7 @@ const AxiosSetup: React.FC<AxiosSetupProps> = ({ children }) => {
     const interceptorId = api.interceptors.response.use(
       (response) => response,
       (error) => {
-        if (isAxiosError(error) && error.response?.status === 401) {
+        if (isAxiosError(error) && error.response?.status === 401 && error.config?.url !== '/auth/status') {
           logout();
           navigate('/login', { replace: true });
         }

@@ -1,7 +1,8 @@
 import { isAxiosError } from "axios";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { API_ORIGIN, api } from "../api/axios";
+import '../App.css';
 
 interface Game {
   gameId: number;
@@ -16,18 +17,28 @@ const Store = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
 
+  const [searchParams, setSearchParams] = useSearchParams();
+  const genreFilter = searchParams.get('genre');
+
   useEffect(() => {
     const loadGames = async () => {
       try {
-        const { data } = await api.get<Game[]>('/Game');
-        setGames(data);
+        if (genreFilter) {
+          const { data } = await api.get<Game[]>(`/games/genres/${genreFilter}`);
+          setGames(data);
+        } else {
+          // Otherwise, load all games normally
+          const { data } = await api.get<Game[]>('/Game');
+          setGames(data);
+        }
       } catch (error) {
         console.error('Error fetching games:', error);
       }
     };
 
     void loadGames();
-  }, []);
+  }, [genreFilter]);
+
 
   const handleTestApi = async () => {
     try {
@@ -37,7 +48,6 @@ const Store = () => {
       console.error('Error fetching test:', error);
     }
   };
-
   const handleAdminTest = async () => {
     try {
       const { data } = await api.get<string>('/user/testAdmin');
@@ -51,59 +61,76 @@ const Store = () => {
       console.error('Error fetching admin test:', error);
     }
   };
-
-  const filteredGames = games.filter(game => 
+  const searchByGenre = async () => {
+    try {
+      const { data } = await api.get<Game[]>(`games/genres/${searchTerm}`);
+      setGames(data);
+    } catch (error) {
+      console.error('Error searching by genre:', error);
+    }
+  }
+  const filteredGames = games.filter(game =>
     game.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
-    <div 
-      className="d-flex flex-column align-items-center min-vh-100 py-4" 
-      style={{ backgroundColor: '#171a21', color: '#c7d5e0' }}
-    >
-      <div className="container w-100" style={{ maxWidth: '1000px' }}>
+    <div className="d-flex justify-content-center align-items-start min-vh-100 bg-primary">
+      <div className="container w-100 bg-dark " style={{ maxWidth: '1000px' }}>
         <h2 className="mb-4 text-white">Featured & Recommended</h2>
-        
-        <input 
-          type="text" 
-          className="form-control mb-4" 
-          placeholder="Search games..." 
-          style={{ backgroundColor: '#2a475e', border: 'none', color: '#c7d5e0' }}
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-        
-        <div 
-          className="p-4 rounded shadow-sm mb-4" 
-          style={{ backgroundColor: '#1b2838' }}
-        >
-          <p>
-            This content is perfectly centered. No matter how wide the user's monitor is, 
-            this box will never stretch wider than 1000px, keeping your UI looking tight and professional.
-          </p>
+
+        <div>
+          <input
+            type="text"
+            className="form-control mb-4"
+            placeholder="Search games..."
+            style={{ backgroundColor: '#2a475e', border: 'none', color: '#c7d5e0' }}
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
         </div>
+
+
+        {/* Optional: Show the user what genre they are currently filtering by */}
+        {genreFilter && (
+          <div className="mb-4 d-flex align-items-center">
+            <span className="text-white fs-5 me-3">
+              Genre: <span className="badge bg-info">{genreFilter}</span>
+            </span>
+            <button
+              className="btn btn-sm btn-outline-light"
+              onClick={() => setSearchParams({})} // Clears the URL parameters
+            >
+              Clear Filter
+            </button>
+          </div>
+        )}
+
         <button className="btn btn-secondary mb-4" onClick={handleTestApi}>Test API</button>
         <button className="btn btn-secondary mb-4 ms-2" onClick={handleAdminTest}>Test Admin API</button>
+
         <div className="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4">
           {filteredGames.map((game) => (
-            <div key={game.gameId} className="col">
-             <div className="p-3 rounded h-100 d-flex flex-column" style={{ backgroundColor: '#2a475e' }}>
-                <img 
-                  src={`${API_ORIGIN}${game.imageUrl}`} 
-                  alt={game.name} 
-                  className="mb-3"
-                  style={{ width: '100%', height: 'auto', aspectRatio: '16/9', objectFit: 'cover', borderRadius: '8px' }}
-                />
-                <h3 className="text-white fs-5">{game.name}</h3>
+            <Link to={`/game/${game.gameId}`} className="text-decoration-none">
+              <div key={game.gameId} className="col">
+                <div className="p-3 rounded h-100 d-flex flex-column" style={{ backgroundColor: '#2a475e' }}>
+                  <img
+                    src={`${API_ORIGIN}${game.imageUrl}`}
+                    alt={game.name}
+                    className="mb-3"
+                    style={{ width: '100%', height: 'auto', aspectRatio: '16/9', objectFit: 'cover', borderRadius: '8px' }}
+                  />
+                  <h3 className="text-white fs-5">{game.name}</h3>
+                </div>
               </div>
-            </div>
-          ))}
+            </Link>
+          ))
+          }
         </div>
 
         {filteredGames.length === 0 && games.length > 0 && (
           <p className="text-white">No games match your search.</p>
         )}
-        
+
         {games.length === 0 && <p>Loading games or database is empty...</p>}
       </div>
     </div>

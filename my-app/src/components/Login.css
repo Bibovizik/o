@@ -1,0 +1,68 @@
+/* 1. The Animated Deep Gradient Background */
+.login-page-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Deep gaming colors: dark blue, rich purple, and dark slate */
+    background: linear-gradient(-45deg, #0f172a, #2a475e, #3b0764, #000000);
+    background-size: 400% 400%;
+    animation: gradientShift 15s ease infinite;
+}
+
+@keyframes gradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* 2. The Glassmorphism Card */
+.glass-card {
+    width: 100%;
+    max-width: 450px;
+    padding: 3rem;
+    border-radius: 16px;
+
+    /* The Magic: Semi-transparent dark background + backdrop blur */
+    background: rgba(20, 20, 20, 0.4);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    /* Safari support */
+
+    /* Subtle light border to simulate the glass edge */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+
+    /* Soft shadow to lift it off the background */
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    color: white;
+}
+
+/* Form element styling to match the premium feel */
+.glass-input {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.glass-input:focus {
+    background: rgba(0, 0, 0, 0.3);
+    border-color: #1a9fff;
+    /* Tokito accent color */
+    outline: none;
+    box-shadow: 0 0 0 0.25rem rgba(26, 159, 255, 0.25);
+    color: white;
+}
+
+/* Fix for browser autofill background color */
+.glass-input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 30px #1a2235 inset !important;
+    -webkit-text-fill-color: white !important;
+}

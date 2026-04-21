@@ -1,9 +1,10 @@
-import { isAxiosError } from "axios";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { api } from "../api/axios";
-import { useAuth } from "../context/AuthContext";
-import type { User } from "../types/User";
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { api } from '../api/axios';
+import { isAxiosError } from 'axios';
+import type { User } from '../types/User';
+
 
 const isUser = (value: unknown): value is User => {
   return (
@@ -14,7 +15,6 @@ const isUser = (value: unknown): value is User => {
     "email" in value
   );
 };
-
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -40,7 +40,6 @@ const Login = () => {
         if (isUser(response.data)) {
           login(response.data);
         }
-
         navigate('/profile');
         return;
       }
@@ -56,34 +55,75 @@ const Login = () => {
       setIsSubmitting(false);
     }
   };
-
   return (
-    <div className="d-flex flex-column align-items-center min-vh-100 py-4">
-      <h1>Login</h1>
-      <p>This is the login page. You can implement your login form here.</p>
-      <input 
-        type="text" 
-        className="form-control mb-2" 
-        placeholder="Email" 
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
-      <input 
-        type="password" 
-        className="form-control mb-2" 
-        placeholder="Password" 
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      <button className="btn btn-primary mt-3" disabled={isSubmitting} onClick={handleLogin}>
-        {isSubmitting ? 'Logging in...' : 'Login'}
-      </button>
-      {errorMessage && <p className="text-danger mt-3">{errorMessage}</p>}
-        <div className="mt-3">
-          <p>Don't have an account? <a href="#">Sign up</a></p>
-          <p>Forgot your password? <a href="#">Reset password</a></p>
-        </div>    
-      </div>    
+    <div className="min-vh-100 bg-black d-flex align-items-center justify-content-center px-3">
+      <div
+        className="w-100 bg-dark border border-secondary rounded-3 p-5 shadow-lg"
+        style={{ maxWidth: '440px' }}
+      >
+        <div className="text-center mb-4">
+          <h2 className="fw-bold text-white" style={{ letterSpacing: '3px' }}>TOKITO</h2>
+          <p className="text-secondary mb-0">Welcome back to the store</p>
+        </div>
+
+        <hr className="border-secondary" />
+
+        <form onSubmit={(e) => { e.preventDefault(); void handleLogin(); }} className="mt-4">
+          <div className="mb-3">
+            <label htmlFor="email" className="form-label text-secondary small text-uppercase">
+              Email Address
+            </label>
+            <input
+              type="email"
+              id="email"
+              className="form-control bg-black text-white border-secondary"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="mb-4">
+            <label htmlFor="password" className="form-label text-secondary small text-uppercase">
+              Password
+            </label>
+            <input
+              type="password"
+              id="password"
+              className="form-control bg-black text-white border-secondary"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+
+          {errorMessage && (
+            <div className="alert alert-danger py-2 small mb-3">
+              {errorMessage}
+            </div>
+          )}
+
+          <button
+            type="submit"
+            className="btn btn-info w-100 py-2 fw-bold mb-3"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? (
+              <><span className="spinner-border spinner-border-sm me-2" />Signing in…</>
+            ) : (
+              'Sign In'
+            )}
+          </button>
+        </form>
+
+        <div className="text-center mt-3">
+          <span className="text-secondary">New to Tokito? </span>
+          <Link to="/register" className="text-info text-decoration-none">
+            Create an account
+          </Link>
+        </div>
+      </div>
+    </div>
   );
 };
 
