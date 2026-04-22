@@ -1,20 +1,21 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Store from './components/Store';
 import './App.css';
-import Login from './components/Login';
-import Profile from './components/Profile';
-import { ProtectedRoute } from './components/ProtectedRoute';
-import AxiosSetup from './components/AxiosSetup';
-import GameDetails from './components/GameDetails';
 import NotFound from './components/NotFound';
 import NavBar from './components/NavBar';
-import Temp from './components/Testing';
-import Register from './components/Register';
 import { createTheme, CssBaseline, ThemeProvider } from '@mui/material';
+import Login from './components/Login';
+import GameDetails from './pages/GameDetails';
+import Register from './components/Register';
+import Store from './pages/Store';
+import ProtectedRoute from './components/ProtectedRoute';
 
 const darkTheme = createTheme({
   palette: {
     mode: 'dark',
+  },
+  typography: {
+    fontFamily:
+      "'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, 'Apple Color Emoji', 'Segoe UI Emoji'",
   },
   components: {
     MuiCard: {
@@ -33,33 +34,37 @@ const darkTheme = createTheme({
     },
   },
 });
-function App() {
+
+const App = () => {
   return (
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
       <Router>
-        <AxiosSetup>
-          <NavBar />
-          <Routes>
-            <Route path="/" element={<Store />} />
-            <Route path="/login" element={<Login />} />
-            <Route
-              path="/profile"
-              element={
-                <ProtectedRoute>
-                  <Profile />
-                </ProtectedRoute>
-              }
-            />
-            <Route path="/game/:id" element={<GameDetails />} />
-            <Route path="*" element={<NotFound />} />
-            <Route path="/testing" element={<Temp />} />
-            <Route path="/register" element={<Register />} />
-          </Routes>
-        </AxiosSetup>
+        <NavBar />
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <Store />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/game/:id"
+            element={
+              <ProtectedRoute>
+                <GameDetails />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/login" element={<Login />} />
+          <Route path="*" element={<NotFound />} />
+          <Route path="/register" element={<Register />} />
+        </Routes>
       </Router>
     </ThemeProvider>
   );
-}
+};
 
 export default App;

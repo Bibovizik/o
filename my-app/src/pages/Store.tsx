@@ -2,15 +2,12 @@ import { useState } from 'react';
 import { API_ORIGIN } from '../api/axios';
 import '../App.css';
 import {
-  Box,
   Button,
   Card,
   CardActions,
   CardContent,
   CardMedia,
-  CircularProgress,
   Grid,
-  Paper,
   Stack,
   TextField,
   Tooltip,
@@ -18,47 +15,39 @@ import {
 } from '@mui/material';
 import { useGetGamesQuery } from '../store/api';
 import { useNavigate } from 'react-router-dom';
-import FavoriteIconOutline from '@mui/icons-material/FavoriteBorder';
 import CompanyIcon from '@mui/icons-material/Apartment';
-import InfoIcon from '@mui/icons-material/Info';
+import GameDescription from '../components/GameDescription';
+import GamesIcon from '@mui/icons-material/Games';
+import FullScreenProgress from '../components/FullScreenProgress';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import CheckIcon from '@mui/icons-material/Check';
 
 const Store = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const { data: games, isLoading } = useGetGamesQuery({ genreFilter: '' });
+  const { data: games, isFetching } = useGetGamesQuery({});
   const navigate = useNavigate();
+
   const filteredGames = games?.filter((game) =>
     game.name.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   return (
-    <Grid container spacing={2} sx={{ p: 2 }}>
+    <Grid sx={{ maxWidth: 'xl', margin: '0 auto', p: 2 }} container spacing={2}>
       <Grid size={12}>
         <Typography variant="h5">Featured & Recommended</Typography>
       </Grid>
       <Grid size={12}>
         <TextField
-          sx={{ width: '100%' }}
+          fullWidth
           label="Search games..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
       </Grid>
-      <Grid>
-        {isLoading && (
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              height: '80vh',
-              width: '100vw',
-            }}
-          >
-            <CircularProgress />
-          </Box>
-        )}
+      <Grid container spacing={2} size={12}>
+        {isFetching && <FullScreenProgress />}
         {filteredGames?.map((game) => (
-          <Grid key={game.gameId}>
+          <Grid size={{ xs: 12, md: 6, lg: 6, xl: 4 }} key={game.gameId}>
             <Card key={game.gameId}>
               <CardContent>
                 <Stack spacing={2}>
@@ -69,7 +58,7 @@ const Store = () => {
                     component="img"
                     image={`${API_ORIGIN}${game.imageUrl}`}
                     alt={game.name}
-                    sx={{ borderRadius: 2, width: '500px', height: '500px' }}
+                    sx={{ borderRadius: 2 }}
                   />
                   <Stack
                     direction="row"
@@ -79,46 +68,43 @@ const Store = () => {
                     <Tooltip title="Publisher">
                       <CompanyIcon color="secondary" />
                     </Tooltip>
-                    <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+                    <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
                       {game.publisherName}
                     </Typography>
                   </Stack>
-                  <Paper
-                    elevation={10}
-                    sx={{
-                      p: 2,
-                      borderLeftColor: 'primary.main',
-                      borderLeftWidth: 3,
-                      borderLeftStyle: 'solid',
-                    }}
-                  >
-                    <Stack spacing={1}>
-                      <Typography
-                        variant="body2"
-                        sx={{ fontWeight: '100', color: 'primary.main' }}
-                      >
-                        About this game
-                      </Typography>
-                      <Typography variant="body2">{game.desription}</Typography>
-                    </Stack>
-                  </Paper>
+                  <GameDescription description={game.description} />
                 </Stack>
               </CardContent>
-              <CardActions sx={{ justifyContent: 'end' }}>
+              <CardActions sx={{ justifyContent: 'end', p: 2, gap: 2 }}>
+                {game.isOwnedByCurrentUser ? (
+                  <Stack
+                    direction="row"
+                    spacing={1}
+                    sx={{ alignItems: 'center' }}
+                  >
+                    <CheckIcon color="success" />
+                    <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
+                      Owned
+                    </Typography>
+                  </Stack>
+                ) : (
+                  <Button
+                    size="large"
+                    variant="contained"
+                    color="primary"
+                    startIcon={<ShoppingCartIcon />}
+                  >
+                    Buy Now
+                  </Button>
+                )}
                 <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={() => navigate(`/game/${game.gameId}`)}
-                  startIcon={<InfoIcon />}
-                >
-                  See more
-                </Button>
-                <Button
+                  size="large"
                   variant="outlined"
                   color="secondary"
-                  startIcon={<FavoriteIconOutline />}
+                  onClick={() => navigate(`/game/${game.gameId}`)}
+                  startIcon={<GamesIcon />}
                 >
-                  Add to Library
+                  See more
                 </Button>
               </CardActions>
             </Card>

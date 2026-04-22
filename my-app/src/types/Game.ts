@@ -2,7 +2,7 @@ export interface Game {
   gameId: number;
   name: string;
   imageUrl: string;
-  desription: string;
+  description: string;
   releaseDate: string;
   publisherName: string;
   publisher: string;
@@ -10,9 +10,13 @@ export interface Game {
   genres: GameGenre[];
   mostOneTimePlayers: number;
   rating: number;
-  gameReviews: GameReview[];
   tags: Tags[];
   basePriceUah: number;
+  currentPrice: {
+    amount: number;
+    currencySymbol: string;
+  };
+  isOwnedByCurrentUser: boolean;
 }
 
 export interface GameReview {

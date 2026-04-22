@@ -1,18 +1,6 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { API_ORIGIN } from '../api/axios';
+import { createApi } from '@reduxjs/toolkit/query/react';
 import type { Game } from '../types/Game';
-
-const ARTIFICIAL_LATENCY_MS = 600;
-
-const rawBaseQuery = fetchBaseQuery({
-  baseUrl: `${API_ORIGIN}/api`,
-  credentials: 'include',
-});
-
-const baseQueryWithLatency: typeof rawBaseQuery = async (args, api, extraOptions) => {
-  await new Promise((resolve) => setTimeout(resolve, ARTIFICIAL_LATENCY_MS));
-  return rawBaseQuery(args, api, extraOptions);
-};
+import baseQueryWithLatency from './baseQuery';
 
 export const gameApi = createApi({
   reducerPath: 'gameApi',
@@ -20,12 +8,12 @@ export const gameApi = createApi({
   baseQuery: baseQueryWithLatency,
   endpoints: (builder) => ({
     getGames: builder.query<Game[], { genreFilter?: string }>({
-      query: ({ genreFilter }) => {
-        if (genreFilter) {
-          return `/games/genre/${genreFilter}`;
-        }
-        return '/Game';
-      },
+      query: () => `/games`,
+      providesTags: ['games']
+    }),
+
+    getGame: builder.query<Game, { id: number }>({
+      query: ({ id }) => `/games/${id}`,
       providesTags: ['games']
     }),
 

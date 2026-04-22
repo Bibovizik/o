@@ -1,35 +1,68 @@
 import React from 'react';
-import { Link, NavLink } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { NavLink, useLocation } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 import {
   Button,
   AppBar,
   Typography,
-  IconButton,
   Toolbar,
   Box,
   Stack,
+  Avatar,
+  IconButton,
 } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import StoreIcon from '@mui/icons-material/Store';
+import GamesIcon from '@mui/icons-material/Games';
+import Logout from '@mui/icons-material/Logout';
+import { useLogoutMutation } from '../store/userApi';
 
 const NavBar: React.FC = () => {
   const { user } = useAuth();
 
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
+  const [logout] = useLogoutMutation();
+
+  const handleLogout = async () => {
+    await logout()
+      .unwrap()
+      .then(() => {
+        navigate('/login');
+      });
+  };
+
+  if (pathname === '/login' || pathname === '/register') {
+    return null;
+  }
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Tokito
+          <Typography
+            variant="h6"
+            component="div"
+            sx={{ flexGrow: 1, fontWeight: 'bold' }}
+          >
+            TOKITO
           </Typography>
-          <NavLink to="/">
-            <Button>Store</Button>
-          </NavLink>
-          <NavLink to="/library">
-            <Button>Library</Button>
-          </NavLink>
-          <NavLink to="/login">
-            <Button color="inherit">Login</Button>
-          </NavLink>
+          <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
+            <NavLink to="/">
+              <Button startIcon={<StoreIcon />}>Store</Button>
+            </NavLink>
+            <NavLink to="/library">
+              <Button startIcon={<GamesIcon />}>Library</Button>
+            </NavLink>
+            <Avatar
+              sx={{ backgroundColor: 'primary.main', cursor: 'pointer' }}
+              onClick={() => navigate('/profile')}
+            >
+              {user?.username?.charAt(0)}
+            </Avatar>
+            <IconButton onClick={handleLogout}>
+              <Logout />
+            </IconButton>
+          </Stack>
         </Toolbar>
       </AppBar>
     </Box>

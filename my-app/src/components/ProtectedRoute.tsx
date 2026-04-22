@@ -1,11 +1,12 @@
 import { Navigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../hooks/useAuth';
 import type { JSX } from 'react/jsx-dev-runtime';
+import FullScreenProgress from './FullScreenProgress';
 
 export const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
-  const { user, loading } = useAuth();
+  const { user, isLoading } = useAuth();
 
-  if (loading) return <div>Loading...</div>;
+  if (isLoading) return <FullScreenProgress />;
   if (!user) return <Navigate to="/login" replace />;
 
   return children;
