@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useLoginMutation } from '../store/userApi';
+import { useLoginMutation } from '../store/api';
 import {
   Typography,
   Grid,

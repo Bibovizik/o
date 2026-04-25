@@ -15,7 +15,7 @@ import { useNavigate } from 'react-router-dom';
 import StoreIcon from '@mui/icons-material/Store';
 import GamesIcon from '@mui/icons-material/Games';
 import Logout from '@mui/icons-material/Logout';
-import { useLogoutMutation } from '../store/userApi';
+import { useLogoutMutation } from '../store/api';
 
 const NavBar: React.FC = () => {
   const { user } = useAuth();
@@ -23,7 +23,6 @@ const NavBar: React.FC = () => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const [logout] = useLogoutMutation();
-
   const handleLogout = async () => {
     await logout()
       .unwrap()
@@ -47,17 +46,31 @@ const NavBar: React.FC = () => {
             TOKITO
           </Typography>
           <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
-            <NavLink to="/">
-              <Button startIcon={<StoreIcon />}>Store</Button>
+            <NavLink to="/" style={{ color: 'white' }}>
+              <Button
+                startIcon={<StoreIcon />}
+                color={pathname === '/' ? 'secondary' : 'inherit'}
+              >
+                Store
+              </Button>
             </NavLink>
-            <NavLink to="/library">
-              <Button startIcon={<GamesIcon />}>Library</Button>
+            <NavLink to="/library" style={{ color: 'white' }}>
+              <Button
+                startIcon={<GamesIcon />}
+                color={pathname === '/library' ? 'secondary' : 'inherit'}
+              >
+                Library
+              </Button>
             </NavLink>
             <Avatar
-              sx={{ backgroundColor: 'primary.main', cursor: 'pointer' }}
+              sx={{
+                backgroundColor:
+                  pathname === '/profile' ? 'secondary.main' : 'white',
+                cursor: 'pointer',
+              }}
               onClick={() => navigate('/profile')}
             >
-              {user?.username?.charAt(0)}
+              {user?.userName?.charAt(0)}
             </Avatar>
             <IconButton onClick={handleLogout}>
               <Logout />

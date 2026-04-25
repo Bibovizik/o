@@ -1,3 +1,17 @@
+export interface PublishGamePayload {
+  name: string;
+  releaseDate: string;
+  description: string;
+  basePriceUah: number;
+  mostOneTimePlayers: number;
+  image?: File;
+  imageUrl?: string;
+  marketPriceOverridesJson?: string;
+  preserveExistingImage?: boolean;
+  systemRequirementsJson?: string;
+  genreIdsJson?: string;
+}
+
 export interface Game {
   gameId: number;
   name: string;
@@ -32,3 +46,14 @@ export interface GameGenre {
 export interface Tags {
   name: string;
 }
+
+export const PUBLISH_GAME_DESCRIPTION_MAX_LENGTH = 200;
+
+export type PublishGameFormValues = {
+  name: string;
+  releaseDate: string;
+  description: string;
+  basePriceUah: string;
+  mostOneTimePlayers: string;
+  image: File | undefined;
+};

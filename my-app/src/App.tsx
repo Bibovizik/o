@@ -4,10 +4,12 @@ import NotFound from './components/NotFound';
 import NavBar from './components/NavBar';
 import { createTheme, CssBaseline, ThemeProvider } from '@mui/material';
 import Login from './components/Login';
-import GameDetails from './pages/GameDetails';
+import GameDetails from './pages/GameDetails/GameDetails';
 import Register from './components/Register';
-import Store from './pages/Store';
+import Store from './pages/Store/Store';
 import ProtectedRoute from './components/ProtectedRoute';
+import Library from './pages/Library/Library';
+import Profile from './pages/Profile/Profile';
 
 const darkTheme = createTheme({
   palette: {
@@ -55,6 +57,22 @@ const App = () => {
             element={
               <ProtectedRoute>
                 <GameDetails />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/library"
+            element={
+              <ProtectedRoute>
+                <Library />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <Profile />
               </ProtectedRoute>
             }
           />

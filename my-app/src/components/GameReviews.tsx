@@ -18,7 +18,7 @@ import { useState } from 'react';
 import SendIcon from '@mui/icons-material/Send';
 import AddIcon from '@mui/icons-material/Add';
 import CancelIcon from '@mui/icons-material/Cancel';
-import { useAddReviewMutation, useGetReviewsQuery } from '../store/reviewApi';
+import { useAddReviewMutation, useGetReviewsQuery } from '../store/api';
 import { useParams } from 'react-router-dom';
 import { useGetGameQuery } from '../store/api';
 

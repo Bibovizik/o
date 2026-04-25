@@ -4,8 +4,10 @@ import {
   Button,
   Card,
   Divider,
+  FormControlLabel,
   Grid,
   Stack,
+  Switch,
   TextField,
   Typography,
 } from '@mui/material';
@@ -16,7 +18,10 @@ import {
 } from '../store/api';
 
 const Register = () => {
+  const [isPublisher, setIsPublisher] = useState(false);
   const [username, setUsername] = useState('');
+  const [publisherName, setPublisherName] = useState('');
+  const [publisherWebsite, setPublisherWebsite] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
@@ -28,10 +33,17 @@ const Register = () => {
 
   const handleRegister = async () => {
     await register({
+      isPublisher: isPublisher,
       userNickname: username,
       email,
       password,
-      countryCode: country ?? '',
+      countryCode: country ?? 'CZ',
+      ...(isPublisher
+        ? {
+            publisherName,
+            website: publisherWebsite,
+          }
+        : {}),
     })
       .unwrap()
       .then(async () => {
@@ -85,6 +97,32 @@ const Register = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
+          <FormControlLabel
+            control={
+              <Switch
+                checked={isPublisher}
+                onChange={(e) => setIsPublisher(e.target.checked)}
+              />
+            }
+            label="I am a publisher"
+          />
+          {isPublisher && (
+            <>
+              <TextField
+                fullWidth
+                label="Publisher name"
+                value={publisherName}
+                onChange={(e) => setPublisherName(e.target.value)}
+              />
+              <TextField
+                fullWidth
+                label="Publisher website"
+                value={publisherWebsite}
+                onChange={(e) => setPublisherWebsite(e.target.value)}
+              />
+            </>
+          )}
+
           <Button
             loading={isLoading || isLoginLoading}
             type="submit"

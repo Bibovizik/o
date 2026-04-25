@@ -1,5 +1,5 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import type { RegisterPublisher, RegisterUser, User } from '../types/User';
+import type { RegisterPublisher, User } from '../types/User';
 import baseQueryWithLatency from './baseQuery';
 
 export const userApi = createApi({
@@ -19,22 +19,22 @@ export const userApi = createApi({
     }),
     login: builder.mutation<void, { email: string, password: string }>({
       query: ({ email, password }) => ({
-        url: `/user/login`,
+        url: `/auth/login`,
         method: 'POST',
         body: { email, password },
       }),
       invalidatesTags: ['user']
     }),
-    register: builder.mutation<void, RegisterUser>({
-      query: ({ userNickname, email, password, countryCode }) => ({
-        url: `/user/register`,
+    register: builder.mutation<void, RegisterPublisher & { isPublisher?: boolean }>({
+      query: ({ isPublisher, ...body }) => ({
+        url: isPublisher ? `/auth/register-publisher` : `/auth/register`,
         method: 'POST',
-        body: { userNickname, email, password, countryCode },
+        body,
       }),
     }),
     registerPublisher: builder.mutation<void, RegisterPublisher>({
       query: ({ userNickname, email, password, countryCode }) => ({
-        url: `/user/register-publisher`,
+        url: `/auth/register-publisher`,
         method: 'POST',
         body: { userNickname, email, password, countryCode },
       }),
@@ -42,5 +42,3 @@ export const userApi = createApi({
     }),
   }),
 });
-
-export const { useGetProfileQuery, useLogoutMutation, useLoginMutation, useRegisterMutation } = userApi;

@@ -21,5 +21,3 @@ export const reviewApi = createApi({
     }),
   }),
 });
-
-export const { useGetReviewsQuery, useAddReviewMutation } = reviewApi;

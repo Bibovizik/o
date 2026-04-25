@@ -1,8 +1,11 @@
+export type Role = 'Publisher' | 'User' | 'Admin';
+
 export interface User {
   id: string;
-  username: string;
+  userName: string;
   email: string;
   countryCode: string;
+  roles: Role[];
 }
 
 export interface RegisterUser {
@@ -14,6 +17,25 @@ export interface RegisterUser {
 
 export interface RegisterPublisher extends RegisterUser {
   publisherName: string;
-  foundationDate: string;
   website: string;
+}
+
+export interface WalletBalance {
+  balances: {
+    currencyCode: string;
+    availableAmount: number;
+  }[],
+  entries: {
+    walletEntryId: number;
+    amount: number;
+    balanceAfter: number;
+    createdAt: string;
+    currencyCode: string;
+    description: string;
+  }[],
+}
+
+export interface TopUpWallet {
+  amount: number;
+  description: string;
 }

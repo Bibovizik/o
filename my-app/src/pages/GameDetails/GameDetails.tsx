@@ -1,25 +1,19 @@
 import { useParams } from 'react-router-dom';
-import { API_ORIGIN } from '../api/axios';
-import {
-  Grid,
-  Typography,
-  CardMedia,
-  Stack,
-  Button,
-  Divider,
-} from '@mui/material';
+import { API_ORIGIN } from '../../api/axios';
+import { Grid, Typography, Stack, Button, Divider } from '@mui/material';
 import CompanyIcon from '@mui/icons-material/Apartment';
-import GameDescription from '../components/GameDescription';
-import GameInfoCard from '../components/GameInfoCard';
-import { useGetGameQuery } from '../store/api';
+import GameDescription from '../../components/GameDescription';
+import GameInfoCard from './components/GameInfoCard';
+import { useGetGameQuery } from '../../store/api';
 import DateRangeIcon from '@mui/icons-material/DateRange';
 import PersonIcon from '@mui/icons-material/Person';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import ReviewTag from '../components/ReviewTag';
-import GameReviews from '../components/GameReviews';
-import FullScreenProgress from '../components/FullScreenProgress';
-import Breadcrumbs from '../components/Breadcrumbs';
+import ReviewTag from '../../components/ReviewTag';
+import GameReviews from '../../components/GameReviews';
+import FullScreenProgress from '../../components/FullScreenProgress';
+import Breadcrumbs from '../../components/Breadcrumbs';
 import StoreIcon from '@mui/icons-material/Store';
+import GameCardMedia from '../../components/GameCardMedia';
 
 const GameDetails = () => {
   const { id } = useParams();
@@ -41,11 +35,9 @@ const GameDetails = () => {
         />
       </Grid>
       <Grid size={6}>
-        <CardMedia
-          component="img"
-          image={`${API_ORIGIN}${game?.imageUrl}`}
+        <GameCardMedia
+          src={`${API_ORIGIN}${game?.imageUrl}`}
           alt={game?.name}
-          sx={{ borderRadius: 2, maxHeight: '600px', objectFit: 'cover' }}
         />
       </Grid>
       <Grid size={6}>

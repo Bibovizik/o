@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { useGetProfileQuery } from '../store/userApi';
+import { useGetProfileQuery } from '../store/api';
 import { AuthContext } from './AuthContext';
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
