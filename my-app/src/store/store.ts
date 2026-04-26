@@ -5,9 +5,11 @@ import { userApi } from './userApi';
 import { countryApi } from './countryApi';
 import { walletApi } from './wallet';
 import { genreApi } from './genreApi';
+import alertReducer from './alertSlice';
 
 export const store = configureStore({
   reducer: {
+    alert: alertReducer,
     [gameApi.reducerPath]: gameApi.reducer,
     [reviewApi.reducerPath]: reviewApi.reducer,
     [userApi.reducerPath]: userApi.reducer,
@@ -16,7 +18,15 @@ export const store = configureStore({
     [genreApi.reducerPath]: genreApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(gameApi.middleware, reviewApi.middleware, userApi.middleware, countryApi.middleware, walletApi.middleware, genreApi.middleware),
+    getDefaultMiddleware()
+      .concat(
+        gameApi.middleware,
+        reviewApi.middleware,
+        userApi.middleware,
+        countryApi.middleware,
+        walletApi.middleware,
+        genreApi.middleware,
+      ),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

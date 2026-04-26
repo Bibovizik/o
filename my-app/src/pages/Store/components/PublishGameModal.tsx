@@ -13,6 +13,7 @@ import {
 } from '@mui/material';
 import {
   useEditGameMutation,
+  useGetGamePricesQuery,
   useGetGameQuery,
   useGetGenresQuery,
   usePublishGameMutation,
@@ -20,7 +21,12 @@ import {
 import CloseIcon from '@mui/icons-material/Close';
 import PublishIcon from '@mui/icons-material/Publish';
 import SaveIcon from '@mui/icons-material/Save';
-import type { Game, Genre, PublishGameFormValues } from '../../../types/Game';
+import type {
+  Game,
+  GamePrice,
+  Genre,
+  PublishGameFormValues,
+} from '../../../types/Game';
 import GameIcon from '@mui/icons-material/Games';
 import {
   PublishGameNameField,
@@ -61,6 +67,7 @@ const defaultFormValues: PublishGameFormValues = {
 const buildFormValuesFromGame = (
   game: Game,
   genresList: Genre[] | undefined,
+  gamePrices: GamePrice[] | undefined,
 ): PublishGameFormValues => {
   const genreIds =
     genresList
@@ -78,7 +85,15 @@ const buildFormValuesFromGame = (
     mostOneTimePlayers: String(game.mostOneTimePlayers),
     image: undefined,
     genreIds,
-    priceOverrides: { ...defaultFormValues.priceOverrides },
+    priceOverrides: gamePrices
+      ?.filter((price) => price.marketCode !== 'UA')
+      .reduce(
+        (acc, price) => {
+          acc[price.marketCode] = price.amount;
+          return acc;
+        },
+        {} as Record<string, number>,
+      ),
   };
 };
 
@@ -95,6 +110,9 @@ const PublishGameModal: FC<PublishGameModalProps> = ({
     { id: editingGameId! },
     { skip: !open || !isEdit },
   );
+  const { data: gamePrices, isFetching: isFetchingGamePrices } =
+    useGetGamePricesQuery({ id: editingGameId! }, { skip: !open || !isEdit });
+
   const {
     control,
     handleSubmit,
@@ -113,8 +131,8 @@ const PublishGameModal: FC<PublishGameModalProps> = ({
 
   useEffect(() => {
     if (!open || !isEdit || !game) return;
-    reset(buildFormValuesFromGame(game, genres));
-  }, [open, isEdit, game, genres, reset]);
+    reset(buildFormValuesFromGame(game, genres, gamePrices));
+  }, [open, isEdit, game, genres, reset, gamePrices]);
 
   const isSaving = isPublishing || isEditing;
   const editFormReady = isEdit && Boolean(game);
@@ -177,7 +195,7 @@ const PublishGameModal: FC<PublishGameModalProps> = ({
               </IconButton>
             </Stack>
           </Grid>
-          {isEdit && isFetchingGame ? (
+          {isEdit && isFetchingGame && isFetchingGamePrices ? (
             <Grid
               size={12}
               sx={{ display: 'flex', justifyContent: 'center', py: 4 }}

@@ -1,5 +1,5 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import type { Dashboard, Game, PublishGamePayload } from '../types/Game';
+import type { Dashboard, Game, GamePrice, PublishGamePayload } from '../types/Game';
 import baseQueryWithLatency from './baseQuery';
 
 function toPublishGameFormData(payload: PublishGamePayload): FormData {
@@ -109,6 +109,10 @@ export const gameApi = createApi({
     }),
     getDashboard: builder.query<Dashboard, void>({
       query: () => `/games/dashboard`,
+      providesTags: ['games'],
+    }),
+    getGamePrices: builder.query<GamePrice[], { id: number }>({
+      query: ({ id }) => `/games/${id}/prices`,
       providesTags: ['games'],
     }),
   }),

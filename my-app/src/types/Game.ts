@@ -38,8 +38,8 @@ export interface GameReview {
   userId: number;
   userName: string;
   score: number;
-  review: string | null; // Nullable to match backend string?
-  ratedAt: string; // JSON parses dates as strings
+  review: string | null;
+  ratedAt: string;
 }
 export interface GameGenre {
   name: string;
@@ -89,4 +89,15 @@ export interface Genre {
   genreId: number;
   name: string;
   description: string;
+}
+
+export interface GamePrice {
+  marketCode: string;
+  marketName: string;
+  currencyCode: string;
+  currencySymbol: string;
+  amount: number;
+  source: string;
+  exchangeRateToUahSnapshot: number;
+  exchangeDate: string | null;
 }

@@ -11,6 +11,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Library from './pages/Library/Library';
 import Profile from './pages/Profile/Profile';
 import Dashboard from './pages/Dashboard/Dashboard';
+import RootNotification from './components/RootNotification';
 
 const darkTheme = createTheme({
   palette: {
@@ -42,6 +43,7 @@ const App = () => {
   return (
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
+      <RootNotification />
       <Router>
         <NavBar />
         <Routes>

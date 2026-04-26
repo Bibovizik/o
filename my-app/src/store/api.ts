@@ -13,6 +13,7 @@ export const {
   useDeleteGameMutation,
   useGetDashboardQuery,
   useEditGameMutation,
+  useGetGamePricesQuery,
 } = gameApi;
 export const { useGetReviewsQuery, useAddReviewMutation } = reviewApi;
 export const {
