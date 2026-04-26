@@ -10,6 +10,7 @@ import Store from './pages/Store/Store';
 import ProtectedRoute from './components/ProtectedRoute';
 import Library from './pages/Library/Library';
 import Profile from './pages/Profile/Profile';
+import Dashboard from './pages/Dashboard/Dashboard';
 
 const darkTheme = createTheme({
   palette: {
@@ -53,7 +54,7 @@ const App = () => {
             }
           />
           <Route
-            path="/game/:id"
+            path="/game/:id/:isLibrary?"
             element={
               <ProtectedRoute>
                 <GameDetails />
@@ -65,6 +66,14 @@ const App = () => {
             element={
               <ProtectedRoute>
                 <Library />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
               </ProtectedRoute>
             }
           />

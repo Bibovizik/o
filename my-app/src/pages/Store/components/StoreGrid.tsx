@@ -1,5 +1,12 @@
 import { useState, type FC } from 'react';
-import { Button, Grid, Stack, TextField, Typography } from '@mui/material';
+import {
+  Button,
+  CircularProgress,
+  Grid,
+  Stack,
+  TextField,
+  Typography,
+} from '@mui/material';
 import { useGetProfileQuery } from '../../../store/api';
 import { useLocation } from 'react-router-dom';
 import PublishIcon from '@mui/icons-material/Publish';
@@ -9,17 +16,25 @@ import type { Game } from '../../../types/Game';
 import { GameCard } from '.';
 
 interface StoreGridProps {
-  filteredGames: Game[];
+  games: Game[];
   isFetching: boolean;
   searchTerm: string;
   setSearchTerm: (searchTerm: string) => void;
+  loadMoreRef: (node?: Element | null) => void;
+  hasNextPage: boolean;
+  isFetchingNextPage: boolean;
+  isError: boolean;
 }
 
 const StoreGrid: FC<StoreGridProps> = ({
-  filteredGames,
+  games,
   isFetching,
   searchTerm,
   setSearchTerm,
+  loadMoreRef,
+  hasNextPage,
+  isFetchingNextPage,
+  isError,
 }) => {
   const [showPublishGameForm, setShowPublishGameForm] = useState(false);
   const { data: user } = useGetProfileQuery();
@@ -62,16 +77,38 @@ const StoreGrid: FC<StoreGridProps> = ({
       </Grid>
       <Grid container spacing={2} size={12}>
         {isFetching && <FullScreenProgress />}
-        {filteredGames?.length === 0 && (
+        {isError && (
+          <Grid size={12}>
+            <Typography variant="body1">Failed to load games</Typography>
+          </Grid>
+        )}
+        {games?.length === 0 && (
           <Grid size={12}>
             <Typography variant="body1">No games found</Typography>
           </Grid>
         )}
-        {filteredGames?.map((game) => (
+        {games?.map((game) => (
           <Grid size={{ xs: 12, md: 6, lg: 6, xl: 4 }} key={game.gameId}>
             <GameCard game={game} isLibrary={isLibrary} />
           </Grid>
         ))}
+        {!isFetching && !isFetchingNextPage && hasNextPage && (
+          <Grid size={12}>
+            <div ref={loadMoreRef} style={{ height: '1px' }} />
+          </Grid>
+        )}
+        {isFetchingNextPage && (
+          <Grid
+            size={12}
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <CircularProgress size={50} />
+          </Grid>
+        )}
       </Grid>
       <PublishGameModal
         open={showPublishGameForm}

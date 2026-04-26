@@ -3,10 +3,28 @@ import { gameApi } from './gameApi';
 import { reviewApi } from './reviewApi';
 import { userApi } from './userApi';
 import { walletApi } from './wallet';
+import { genreApi } from './genreApi';
 
-
-export const { useGetGamesQuery, useGetGameQuery, usePublishGameMutation, useGetLibraryGamesQuery } = gameApi;
+export const {
+  useGetGamesInfiniteQuery,
+  useGetGameQuery,
+  usePublishGameMutation,
+  usePurchaseGameMutation,
+  useDeleteGameMutation,
+  useGetDashboardQuery,
+} = gameApi;
 export const { useGetReviewsQuery, useAddReviewMutation } = reviewApi;
-export const { useGetProfileQuery, useLogoutMutation, useLoginMutation, useRegisterMutation, useRegisterPublisherMutation } = userApi;
+export const {
+  useGetProfileQuery,
+  useGetUsersQuery,
+  useDeleteUserMutation,
+  useChangeUserStatusMutation,
+  useChangeCountryMutation,
+  useLogoutMutation,
+  useLoginMutation,
+  useRegisterMutation,
+  useRegisterPublisherMutation,
+} = userApi;
 export const { useGetCountryCodeQuery } = countryApi;
 export const { useGetWalletQuery, useTopUpWalletMutation } = walletApi;
+export const { useGetGenresQuery, useAddGenreMutation } = genreApi;

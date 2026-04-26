@@ -4,6 +4,7 @@ import {
   Card,
   CardActions,
   CardContent,
+  Chip,
   Stack,
   Tooltip,
   Typography,
@@ -17,6 +18,8 @@ import { API_ORIGIN } from '../../../api/axios';
 import GameDescription from '../../../components/GameDescription';
 import GameCardMedia from '../../../components/GameCardMedia';
 import type { Game } from '../../../types/Game';
+import { useState } from 'react';
+import BuyGameModal from '../../../components/BuyGameModal';
 
 export interface GameCardProps {
   game: Game;
@@ -25,7 +28,7 @@ export interface GameCardProps {
 
 const GameCard: FC<GameCardProps> = ({ game, isLibrary }) => {
   const navigate = useNavigate();
-
+  const [showBuyGameModal, setShowBuyGameModal] = useState(false);
   return (
     <Card
       sx={{
@@ -53,9 +56,26 @@ const GameCard: FC<GameCardProps> = ({ game, isLibrary }) => {
             </Typography>
           </Stack>
           <GameDescription description={game.description} />
+          {game.genres?.length > 0 && (
+            <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap' }}>
+              {game.genres.map((genre) => (
+                <Chip
+                  key={genre.name}
+                  variant="outlined"
+                  color="success"
+                  label={genre.name}
+                />
+              ))}
+            </Stack>
+          )}
         </Stack>
       </CardContent>
       <CardActions sx={{ justifyContent: 'end', p: 2, gap: 2 }}>
+        {!isLibrary && (
+          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+            {game.currentPrice?.amount} {game.currentPrice?.currencySymbol}
+          </Typography>
+        )}
         {!isLibrary &&
           (game.isOwnedByCurrentUser ? (
             <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
@@ -70,6 +90,7 @@ const GameCard: FC<GameCardProps> = ({ game, isLibrary }) => {
               variant="contained"
               color="primary"
               startIcon={<ShoppingCartIcon />}
+              onClick={() => setShowBuyGameModal(true)}
             >
               Buy Now
             </Button>
@@ -78,12 +99,21 @@ const GameCard: FC<GameCardProps> = ({ game, isLibrary }) => {
           size="large"
           variant="outlined"
           color="secondary"
-          onClick={() => navigate(`/game/${game.gameId}`)}
+          onClick={() =>
+            navigate(`/game/${game.gameId}${isLibrary ? '/library' : ''}`)
+          }
           startIcon={<GamesIcon />}
         >
           See more
         </Button>
       </CardActions>
+      {showBuyGameModal && (
+        <BuyGameModal
+          open={showBuyGameModal}
+          onClose={() => setShowBuyGameModal(false)}
+          gameId={game.gameId}
+        />
+      )}
     </Card>
   );
 };

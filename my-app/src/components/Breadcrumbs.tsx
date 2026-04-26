@@ -30,7 +30,12 @@ const Breadcrumbs = ({ paths }: BreadcrumbsProps) => {
             >
               <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
                 {icon}
-                <Typography variant="body2">{label}</Typography>
+                <Typography
+                  variant="body2"
+                  sx={{ color: isLast ? 'secondary.main' : 'text.secondary' }}
+                >
+                  {label}
+                </Typography>
               </Stack>
             </Link>
           </Stack>

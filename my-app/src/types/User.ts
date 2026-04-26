@@ -1,11 +1,17 @@
 export type Role = 'Publisher' | 'User' | 'Admin';
 
+export enum UserStatus {
+  Active = 1,
+  Banned = 2,
+}
+
 export interface User {
-  id: string;
+  userId: number;
   userName: string;
   email: string;
   countryCode: string;
   roles: Role[];
+  accountStatusCode?: UserStatus;
 }
 
 export interface RegisterUser {

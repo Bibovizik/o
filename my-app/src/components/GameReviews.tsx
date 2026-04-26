@@ -11,6 +11,7 @@ import {
   IconButton,
   Box,
   CircularProgress,
+  Avatar,
 } from '@mui/material';
 import ReviewTag from './ReviewTag';
 import SelectableReviewTag from './SelectableReviewTag';
@@ -18,7 +19,11 @@ import { useState } from 'react';
 import SendIcon from '@mui/icons-material/Send';
 import AddIcon from '@mui/icons-material/Add';
 import CancelIcon from '@mui/icons-material/Cancel';
-import { useAddReviewMutation, useGetReviewsQuery } from '../store/api';
+import {
+  useAddReviewMutation,
+  useGetProfileQuery,
+  useGetReviewsQuery,
+} from '../store/api';
 import { useParams } from 'react-router-dom';
 import { useGetGameQuery } from '../store/api';
 
@@ -36,6 +41,8 @@ const GameReviews = () => {
     id: Number(id),
   });
 
+  const { data: user } = useGetProfileQuery();
+
   const [addReview, { isLoading: isAddingReview }] = useAddReviewMutation();
 
   const handleSubmit = () => {
@@ -44,6 +51,20 @@ const GameReviews = () => {
       setReview('');
       setSelectedScore(null);
     });
+  };
+
+  const alreadyReviewedByCurrentUser = reviews?.some(
+    (review) => review.userId === user?.userId,
+  );
+
+  const getTooltipTitle = () => {
+    if (!game?.isOwnedByCurrentUser) {
+      return 'You must own the game to add a review';
+    }
+    if (alreadyReviewedByCurrentUser) {
+      return 'You have already reviewed this game';
+    }
+    return 'Add a review';
   };
 
   if (isFetchingReviews)
@@ -71,16 +92,12 @@ const GameReviews = () => {
           Reviews
         </Typography>
         {!showAddReviewForm && (
-          <Tooltip
-            title={
-              !game?.isOwnedByCurrentUser
-                ? 'You must own the game to add a review'
-                : 'Add a review'
-            }
-          >
+          <Tooltip title={getTooltipTitle()}>
             <span>
               <Button
-                disabled={!game?.isOwnedByCurrentUser}
+                disabled={
+                  !game?.isOwnedByCurrentUser || alreadyReviewedByCurrentUser
+                }
                 variant="outlined"
                 color="secondary"
                 startIcon={<AddIcon />}
@@ -157,10 +174,14 @@ const GameReviews = () => {
             <CardContent
               sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
             >
+              <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
+                <Avatar />
+                <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
+                  {review.userName}
+                </Typography>
+              </Stack>
+              <Typography variant="body1">{review.review}</Typography>
               <ReviewTag rating={review.score} />
-              <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
-                {review.review}
-              </Typography>
             </CardContent>
           </Card>
         ))}

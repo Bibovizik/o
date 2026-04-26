@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
 import { API_ORIGIN } from '../../api/axios';
-import { Grid, Typography, Stack, Button, Divider } from '@mui/material';
+import { Chip, Grid, Typography, Stack, Button, Divider } from '@mui/material';
 import CompanyIcon from '@mui/icons-material/Apartment';
 import GameDescription from '../../components/GameDescription';
 import GameInfoCard from './components/GameInfoCard';
@@ -14,9 +14,10 @@ import FullScreenProgress from '../../components/FullScreenProgress';
 import Breadcrumbs from '../../components/Breadcrumbs';
 import StoreIcon from '@mui/icons-material/Store';
 import GameCardMedia from '../../components/GameCardMedia';
+import GamesIcon from '@mui/icons-material/Games';
 
 const GameDetails = () => {
-  const { id } = useParams();
+  const { id, isLibrary } = useParams();
 
   const { data: game, isFetching: isFetchingGame } = useGetGameQuery({
     id: Number(id),
@@ -29,7 +30,11 @@ const GameDetails = () => {
       <Grid size={12}>
         <Breadcrumbs
           paths={[
-            { label: 'Store', path: '/', icon: <StoreIcon /> },
+            {
+              label: isLibrary ? 'Library' : 'Store',
+              path: isLibrary ? '/library' : '/',
+              icon: isLibrary ? <GamesIcon /> : <StoreIcon />,
+            },
             { label: game?.name, path: `/game/${id}` },
           ]}
         />
@@ -80,6 +85,18 @@ const GameDetails = () => {
               </Grid>
             </Grid>
             <GameDescription description={game?.description} />
+            {game?.genres?.length > 0 && (
+              <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap' }}>
+                {game.genres.map((genre) => (
+                  <Chip
+                    key={genre.name}
+                    variant="outlined"
+                    color="success"
+                    label={genre.name}
+                  />
+                ))}
+              </Stack>
+            )}
           </Stack>
           <Stack direction="row" spacing={2} sx={{ justifyContent: 'end' }}>
             <Typography variant="h4" sx={{ fontWeight: 'bold' }}>

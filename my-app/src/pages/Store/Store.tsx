@@ -1,23 +1,41 @@
 import { useState } from 'react';
-
-import { useGetGamesQuery } from '../../store/api';
+import { useInView } from 'react-intersection-observer';
+import useFetchNextPage from '../../hooks/useFetchNextPage';
+import useDebounce from '../../hooks/useDebounce';
+import { useGetGamesInfiniteQuery } from '../../store/api';
 
 import StoreGrid from './components/StoreGrid';
 
 const Store = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const { data: games, isFetching } = useGetGamesQuery({});
+  const debouncedSearchTerm = useDebounce(searchTerm);
 
-  const filteredGames = games?.filter((game) =>
-    game.name.toLowerCase().includes(searchTerm.toLowerCase()),
-  );
+  const {
+    data,
+    isFetching,
+    isLoading,
+    isError,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useGetGamesInfiniteQuery({ name: debouncedSearchTerm });
+
+  const games = data?.pages.flatMap((page) => page.items) ?? [];
+
+  const { ref: loadMoreRef, inView } = useInView();
+
+  useFetchNextPage(inView, hasNextPage, isFetchingNextPage, fetchNextPage);
 
   return (
     <StoreGrid
-      filteredGames={filteredGames}
-      isFetching={isFetching}
+      games={games}
+      isFetching={isFetching || isLoading}
       searchTerm={searchTerm}
       setSearchTerm={setSearchTerm}
+      loadMoreRef={loadMoreRef}
+      hasNextPage={Boolean(hasNextPage)}
+      isFetchingNextPage={isFetchingNextPage}
+      isError={isError}
     />
   );
 };

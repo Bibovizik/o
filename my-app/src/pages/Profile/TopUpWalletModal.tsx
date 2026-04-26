@@ -68,6 +68,7 @@ const TopUpWalletModal: FC<TopUpWalletModalProps> = ({ open, onClose }) => {
           </Grid>
           <Grid size={12}>
             <Button
+              size="large"
               fullWidth
               type="submit"
               variant="contained"
@@ -75,7 +76,7 @@ const TopUpWalletModal: FC<TopUpWalletModalProps> = ({ open, onClose }) => {
               disabled={isLoading || !isValid}
               startIcon={<MoneyIcon />}
             >
-              Top Up
+              Top Up Balance
             </Button>
           </Grid>
         </Grid>

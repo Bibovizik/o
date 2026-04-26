@@ -29,12 +29,14 @@ export interface Game {
   currentPrice: {
     amount: number;
     currencySymbol: string;
+    currencyCode: string;
   };
   isOwnedByCurrentUser: boolean;
 }
 
 export interface GameReview {
   userId: number;
+  userName: string;
   score: number;
   review: string | null; // Nullable to match backend string?
   ratedAt: string; // JSON parses dates as strings
@@ -56,4 +58,35 @@ export type PublishGameFormValues = {
   basePriceUah: string;
   mostOneTimePlayers: string;
   image: File | undefined;
+  priceOverrides?: Record<string, number>;
+  genreIds: number[];
 };
+
+export interface Dashboard {
+  dateFrom: string;
+  dateTo: string;
+  publisherId: number;
+  gameId: number | null;
+  totals: {
+    revenueUah: number;
+    copiesSold: number;
+    gameCount: number;
+  };
+  games: {
+    gameId: number;
+    gameName: string;
+    revenueUah: number;
+    copiesSold: number;
+  }[];
+  daily: {
+    date: string;
+    revenueUah: number;
+    copiesSold: number;
+  }[];
+}
+
+export interface Genre {
+  genreId: number;
+  name: string;
+  description: string;
+}

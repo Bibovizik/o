@@ -1,6 +1,6 @@
 import type { FC } from 'react';
 import { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import {
   Box,
   Modal,
@@ -10,8 +10,15 @@ import {
   Button,
   IconButton,
   CircularProgress,
+  Checkbox,
+  FormControl,
+  InputLabel,
+  ListItemText,
+  MenuItem,
+  OutlinedInput,
+  Select,
 } from '@mui/material';
-import { usePublishGameMutation } from '../../../store/api';
+import { useGetGenresQuery, usePublishGameMutation } from '../../../store/api';
 import CloseIcon from '@mui/icons-material/Close';
 import PublishIcon from '@mui/icons-material/Publish';
 import type { PublishGameFormValues } from '../../../types/Game';
@@ -38,10 +45,21 @@ const defaultFormValues: PublishGameFormValues = {
   basePriceUah: '',
   mostOneTimePlayers: '',
   image: undefined,
+  genreIds: [],
+  priceOverrides: {
+    US: 0,
+    GB: 0,
+    PL: 0,
+    EU: 0,
+    TR: 0,
+    JP: 0,
+    CA: 0,
+  },
 };
 
 const PublishGameModal: FC<PublishGameModalProps> = ({ open, onClose }) => {
   const [publishGame, { isLoading }] = usePublishGameMutation();
+  const { data: genres } = useGetGenresQuery();
   const {
     control,
     handleSubmit,
@@ -58,6 +76,10 @@ const PublishGameModal: FC<PublishGameModalProps> = ({ open, onClose }) => {
   }, [open, reset]);
 
   const onSubmit = async (data: PublishGameFormValues) => {
+    const overrides = Object.entries(data.priceOverrides ?? {})
+      .map(([marketCode, price]) => ({ marketCode, amount: Number(price) }))
+      .filter((row) => Number.isFinite(row.amount) && row.amount > 0);
+
     await publishGame({
       name: data.name,
       releaseDate: data.releaseDate,
@@ -65,6 +87,10 @@ const PublishGameModal: FC<PublishGameModalProps> = ({ open, onClose }) => {
       basePriceUah: Number(data.basePriceUah) || 0,
       mostOneTimePlayers: Number(data.mostOneTimePlayers) || 0,
       ...(data.image ? { image: data.image } : {}),
+      marketPriceOverridesJson: JSON.stringify(overrides),
+      ...(data.genreIds.length > 0
+        ? { genreIdsJson: JSON.stringify(data.genreIds) }
+        : {}),
     });
     reset(defaultFormValues);
     onClose();
@@ -96,26 +122,73 @@ const PublishGameModal: FC<PublishGameModalProps> = ({ open, onClose }) => {
               </IconButton>
             </Stack>
           </Grid>
-          <Grid size={6}>
-            <PublishGameNameField control={control} />
-          </Grid>
-          <Grid size={6}>
-            <PublishGameReleaseDateField control={control} />
-          </Grid>
-          <Grid size={12}>
-            <PublishGameDescriptionField control={control} />
-          </Grid>
-          <Grid size={6}>
-            <PublishGameBasePriceField control={control} />
-          </Grid>
-          <Grid size={6}>
-            <PublishGameMostOneTimePlayersField control={control} />
-          </Grid>
-          <Grid size={12}>
-            <Stack direction="column" spacing={2}>
-              <Typography variant="body1">Game cover image</Typography>
-              <PublishGameCoverImageField control={control} />
-            </Stack>
+          <Grid
+            container
+            spacing={3}
+            size={12}
+            sx={{ maxHeight: '70vh', overflow: 'auto' }}
+          >
+            <Grid size={6}>
+              <PublishGameNameField control={control} />
+            </Grid>
+            <Grid size={6}>
+              <PublishGameReleaseDateField control={control} />
+            </Grid>
+            <Grid size={12}>
+              <PublishGameDescriptionField control={control} />
+            </Grid>
+            <Grid size={12}>
+              <PublishGameMostOneTimePlayersField control={control} />
+            </Grid>
+            <Grid size={12}>
+              <PublishGameBasePriceField control={control} />
+            </Grid>
+            <Grid size={12}>
+              <Controller
+                control={control}
+                name="genreIds"
+                render={({ field }) => (
+                  <FormControl fullWidth>
+                    <InputLabel id="publish-game-genres-label">Genres</InputLabel>
+                    <Select<number[]>
+                      labelId="publish-game-genres-label"
+                      multiple
+                      value={field.value}
+                      onChange={(e) => {
+                        const value = e.target.value as number[] | string[];
+                        field.onChange(
+                          (value as Array<string | number>).map((v) =>
+                            typeof v === 'number' ? v : Number(v),
+                          ),
+                        );
+                      }}
+                      input={<OutlinedInput label="Genres" />}
+                      renderValue={(selected) => {
+                        const ids = selected as number[];
+                        const labels =
+                          genres
+                            ?.filter((g) => ids.includes(g.genreId))
+                            .map((g) => g.name) ?? [];
+                        return labels.join(', ');
+                      }}
+                    >
+                      {genres?.map((genre) => (
+                        <MenuItem key={genre.genreId} value={genre.genreId}>
+                          <Checkbox checked={field.value.includes(genre.genreId)} />
+                          <ListItemText primary={genre.name} />
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                )}
+              />
+            </Grid>
+            <Grid size={12}>
+              <Stack direction="column" spacing={2}>
+                <Typography variant="body1">Game cover image</Typography>
+                <PublishGameCoverImageField control={control} />
+              </Stack>
+            </Grid>
           </Grid>
           <Grid size={12}>
             <Button

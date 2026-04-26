@@ -13,13 +13,16 @@ import {
   TableBody,
   Table,
 } from '@mui/material';
+import type { ChipProps } from '@mui/material';
 import type { Role } from '../../types/User';
 import { useGetProfileQuery, useGetWalletQuery } from '../../store/api';
 import TopUpWalletModal from './TopUpWalletModal';
+import ChangeCountryModal from './ChangeCountryModal';
 import { useState } from 'react';
 import MoneyIcon from '@mui/icons-material/Money';
+import PublicIcon from '@mui/icons-material/Public';
 
-const roleToColor: Record<Role, string> = {
+export const roleToColor: Record<Role, string> = {
   Publisher: 'success',
   User: 'info',
   Admin: 'warning',
@@ -29,6 +32,7 @@ const Profile = () => {
   const { data: user } = useGetProfileQuery();
   const { data: wallet } = useGetWalletQuery();
   const [showTopUpWalletModal, setShowTopUpWalletModal] = useState(false);
+  const [showChangeCountryModal, setShowChangeCountryModal] = useState(false);
 
   return (
     <Grid sx={{ maxWidth: 'md', margin: '0 auto', p: 2 }} container spacing={2}>
@@ -51,9 +55,19 @@ const Profile = () => {
             <Typography>
               <strong>Email</strong> {user?.email}
             </Typography>
-            <Typography>
-              <strong>Country</strong> {user?.countryCode}
-            </Typography>
+            <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
+              <Typography>
+                <strong>Country</strong> {user?.countryCode}
+              </Typography>
+              <Button
+                variant="text"
+                color="primary"
+                startIcon={<PublicIcon />}
+                onClick={() => setShowChangeCountryModal(true)}
+              >
+                Change Country
+              </Button>
+            </Stack>
             <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
               <Typography sx={{ fontWeight: 'bold' }}>Roles</Typography>
               {user?.roles.map((role) => (
@@ -61,7 +75,7 @@ const Profile = () => {
                   variant="outlined"
                   key={role}
                   label={role}
-                  color={roleToColor[role]}
+                  color={roleToColor[role] as ChipProps['color']}
                 />
               ))}
             </Stack>
@@ -97,7 +111,7 @@ const Profile = () => {
               }}
               startIcon={<MoneyIcon />}
             >
-              Top Wallet
+              Top Up Balance
             </Button>
           </Stack>
         </Card>
@@ -124,7 +138,9 @@ const Profile = () => {
                 <TableBody>
                   {wallet?.entries.map((transaction) => (
                     <TableRow key={transaction.walletEntryId}>
-                      <TableCell>{transaction.createdAt}</TableCell>
+                      <TableCell>
+                        {new Date(transaction.createdAt).toLocaleDateString()}
+                      </TableCell>
                       <TableCell>{transaction.amount}</TableCell>
                       <TableCell>{transaction.balanceAfter}</TableCell>
                       <TableCell>{transaction.currencyCode}</TableCell>
@@ -140,6 +156,10 @@ const Profile = () => {
       <TopUpWalletModal
         open={showTopUpWalletModal}
         onClose={() => setShowTopUpWalletModal(false)}
+      />
+      <ChangeCountryModal
+        open={showChangeCountryModal}
+        onClose={() => setShowChangeCountryModal(false)}
       />
     </Grid>
   );

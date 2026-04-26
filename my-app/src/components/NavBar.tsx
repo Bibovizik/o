@@ -15,7 +15,8 @@ import { useNavigate } from 'react-router-dom';
 import StoreIcon from '@mui/icons-material/Store';
 import GamesIcon from '@mui/icons-material/Games';
 import Logout from '@mui/icons-material/Logout';
-import { useLogoutMutation } from '../store/api';
+import { useGetWalletQuery, useLogoutMutation } from '../store/api';
+import DashboardIcon from '@mui/icons-material/Dashboard';
 
 const NavBar: React.FC = () => {
   const { user } = useAuth();
@@ -30,6 +31,7 @@ const NavBar: React.FC = () => {
         navigate('/login');
       });
   };
+  const { data: wallet } = useGetWalletQuery();
 
   if (pathname === '/login' || pathname === '/register') {
     return null;
@@ -62,6 +64,14 @@ const NavBar: React.FC = () => {
                 Library
               </Button>
             </NavLink>
+            <NavLink to="/dashboard" style={{ color: 'white' }}>
+              <Button
+                startIcon={<DashboardIcon />}
+                color={pathname === '/dashboard' ? 'secondary' : 'inherit'}
+              >
+                Dashboard
+              </Button>
+            </NavLink>
             <Avatar
               sx={{
                 backgroundColor:
@@ -72,6 +82,10 @@ const NavBar: React.FC = () => {
             >
               {user?.userName?.charAt(0)}
             </Avatar>
+            <Typography variant="body1" color="warning">
+              {wallet?.balances[0]?.availableAmount}{' '}
+              {wallet?.balances[0]?.currencyCode}
+            </Typography>
             <IconButton onClick={handleLogout}>
               <Logout />
             </IconButton>

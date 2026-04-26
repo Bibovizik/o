@@ -1,10 +1,10 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import type { RegisterPublisher, User } from '../types/User';
+import type { RegisterPublisher, User, UserStatus } from '../types/User';
 import baseQueryWithLatency from './baseQuery';
 
 export const userApi = createApi({
   reducerPath: 'userApi',
-  tagTypes: ['user'],
+  tagTypes: ['user', 'users'],
   baseQuery: baseQueryWithLatency,
   endpoints: (builder) => ({
     getProfile: builder.query<User, void>({
@@ -39,6 +39,33 @@ export const userApi = createApi({
         body: { userNickname, email, password, countryCode },
       }),
       invalidatesTags: ['user']
+    }),
+    getUsers: builder.query<User[], void>({
+      query: () => `/user/getAllUsers`,
+      providesTags: ['users']
+    }),
+    deleteUser: builder.mutation<void, number>({
+      query: (userId) => ({
+        url: `/user/${userId}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['users'],
+    }),
+    changeUserStatus: builder.mutation<void, { userId: number, accountStatus: UserStatus }>({
+      query: ({ userId, accountStatus }) => ({
+        url: `/user/${userId}/account-status`,
+        method: 'PUT',
+        body: { accountStatus },
+      }),
+      invalidatesTags: ['users'],
+    }),
+    changeCountry: builder.mutation<void, { countryCode: string }>({
+      query: ({ countryCode }) => ({
+        url: `/user/change-country`,
+        method: 'POST',
+        body: { countryCode },
+      }),
+      invalidatesTags: ['user'],
     }),
   }),
 });
