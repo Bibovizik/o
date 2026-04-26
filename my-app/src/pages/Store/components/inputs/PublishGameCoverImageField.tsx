@@ -3,18 +3,25 @@ import { Input, Typography } from '@mui/material';
 import type { FC } from 'react';
 import type { PublishModalControlProps } from '../types';
 
-const PublishGameCoverImageField: FC<PublishModalControlProps> = ({
+export interface PublishGameCoverImageFieldProps
+  extends PublishModalControlProps {
+  /** When false, leaving the file empty is valid (e.g. edit game, keep existing cover) */
+  requireImage?: boolean;
+}
+
+const PublishGameCoverImageField: FC<PublishGameCoverImageFieldProps> = ({
   control,
+  requireImage = true,
 }) => {
   return (
     <Controller
       name="image"
       control={control}
-      rules={{ required: 'Cover image is required' }}
+      rules={requireImage ? { required: 'Cover image is required' } : {}}
       render={({ field: { onChange, onBlur, name, ref }, fieldState }) => (
         <>
           <Input
-            required
+            required={requireImage}
             type="file"
             fullWidth
             name={name}

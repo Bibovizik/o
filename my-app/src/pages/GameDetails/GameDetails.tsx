@@ -15,9 +15,13 @@ import Breadcrumbs from '../../components/Breadcrumbs';
 import StoreIcon from '@mui/icons-material/Store';
 import GameCardMedia from '../../components/GameCardMedia';
 import GamesIcon from '@mui/icons-material/Games';
+import BuyGameModal from '../../components/BuyGameModal';
+import { useState } from 'react';
+import CheckIcon from '@mui/icons-material/Check';
 
 const GameDetails = () => {
   const { id, isLibrary } = useParams();
+  const [showBuyGameModal, setShowBuyGameModal] = useState(false);
 
   const { data: game, isFetching: isFetchingGame } = useGetGameQuery({
     id: Number(id),
@@ -91,7 +95,7 @@ const GameDetails = () => {
                   <Chip
                     key={genre.name}
                     variant="outlined"
-                    color="success"
+                    color="info"
                     label={genre.name}
                   />
                 ))}
@@ -102,14 +106,24 @@ const GameDetails = () => {
             <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
               {game?.currentPrice?.amount} {game?.currentPrice?.currencySymbol}
             </Typography>
-            <Button
-              size="large"
-              variant="contained"
-              color="primary"
-              startIcon={<ShoppingCartIcon />}
-            >
-              Buy now
-            </Button>
+            {game?.isOwnedByCurrentUser ? (
+              <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+                <CheckIcon color="success" />
+                <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
+                  Owned
+                </Typography>
+              </Stack>
+            ) : (
+              <Button
+                size="large"
+                variant="contained"
+                color="primary"
+                startIcon={<ShoppingCartIcon />}
+                onClick={() => setShowBuyGameModal(true)}
+              >
+                Buy now
+              </Button>
+            )}
           </Stack>
         </Stack>
       </Grid>
@@ -125,6 +139,13 @@ const GameDetails = () => {
       <Grid size={12}>
         <GameReviews />
       </Grid>
+      {showBuyGameModal && (
+        <BuyGameModal
+          open={showBuyGameModal}
+          onClose={() => setShowBuyGameModal(false)}
+          gameId={game.gameId}
+        />
+      )}
     </Grid>
   );
 };

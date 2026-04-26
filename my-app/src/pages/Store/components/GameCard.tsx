@@ -62,7 +62,7 @@ const GameCard: FC<GameCardProps> = ({ game, isLibrary }) => {
                 <Chip
                   key={genre.name}
                   variant="outlined"
-                  color="success"
+                  color="info"
                   label={genre.name}
                 />
               ))}

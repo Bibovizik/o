@@ -13,47 +13,63 @@ import {
 import CloseIcon from '@mui/icons-material/Close';
 import CategoryIcon from '@mui/icons-material/Category';
 import { modalStyles } from '../../../components/styles';
-import { useAddGenreMutation } from '../../../store/api';
+import {
+  useAddGenreMutation,
+  useUpdateGenreMutation,
+} from '../../../store/api';
+import type { Genre } from '../../../types/Game';
 
-export interface AddGenreModalProps {
+export interface GenreModalProps {
   open: boolean;
   onClose: () => void;
+  /** When set, the modal edits this genre; otherwise it adds a new one */
+  genre?: Genre | null;
 }
 
-type AddGenreFormValues = {
+type GenreFormValues = {
   name: string;
   description: string;
 };
 
-const AddGenreModal: FC<AddGenreModalProps> = ({ open, onClose }) => {
-  const [addGenre, { isLoading }] = useAddGenreMutation();
+const GenreModal: FC<GenreModalProps> = ({ open, onClose, genre }) => {
+  const [addGenre, { isLoading: isAdding }] = useAddGenreMutation();
+  const [updateGenre, { isLoading: isUpdating }] = useUpdateGenreMutation();
+  const isEdit = Boolean(genre);
   const {
     register,
     handleSubmit,
     reset,
     formState: { isValid },
-  } = useForm<AddGenreFormValues>({
+  } = useForm<GenreFormValues>({
     defaultValues: { name: '', description: '' },
   });
 
   useEffect(() => {
     if (open) {
-      reset({ name: '', description: '' });
+      reset({
+        name: genre?.name ?? '',
+        description: genre?.description ?? '',
+      });
     }
-  }, [open, reset]);
+  }, [open, genre, reset]);
 
   const handleClose = () => {
     reset({ name: '', description: '' });
     onClose();
   };
 
-  const onSubmit = async (data: AddGenreFormValues) => {
-    await addGenre({
-      name: data.name.trim(),
-      description: data.description.trim(),
-    });
+  const onSubmit = async (data: GenreFormValues) => {
+    const name = data.name.trim();
+    const description = data.description.trim();
+    if (isEdit && genre) {
+      await updateGenre({ genreId: genre.genreId, name, description });
+    } else {
+      await addGenre({ name, description });
+    }
     handleClose();
   };
+
+  const isLoading = isAdding || isUpdating;
 
   return (
     <Modal open={open} onClose={handleClose}>
@@ -73,7 +89,7 @@ const AddGenreModal: FC<AddGenreModalProps> = ({ open, onClose }) => {
               <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
                 <CategoryIcon color="primary" />
                 <Typography variant="h6" component="h2">
-                  Add genre
+                  {isEdit ? 'Edit genre' : 'Add genre'}
                 </Typography>
               </Stack>
               <IconButton
@@ -112,7 +128,7 @@ const AddGenreModal: FC<AddGenreModalProps> = ({ open, onClose }) => {
               size="large"
               disabled={isLoading || !isValid}
             >
-              Add
+              {isEdit ? 'Save' : 'Add'}
             </Button>
           </Grid>
         </Grid>
@@ -121,4 +137,4 @@ const AddGenreModal: FC<AddGenreModalProps> = ({ open, onClose }) => {
   );
 };
 
-export default AddGenreModal;
+export default GenreModal;

@@ -4,3 +4,4 @@ export { default as PublishGameDescriptionField } from './PublishGameDescription
 export { default as PublishGameBasePriceField } from './PublishGameBasePriceField';
 export { default as PublishGameMostOneTimePlayersField } from './PublishGameMostOneTimePlayersField';
 export { default as PublishGameCoverImageField } from './PublishGameCoverImageField';
+export { default as PublishGameGenresField } from './PublishGameGenresField';

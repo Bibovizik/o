@@ -12,6 +12,7 @@ export const {
   usePurchaseGameMutation,
   useDeleteGameMutation,
   useGetDashboardQuery,
+  useEditGameMutation,
 } = gameApi;
 export const { useGetReviewsQuery, useAddReviewMutation } = reviewApi;
 export const {
@@ -27,4 +28,4 @@ export const {
 } = userApi;
 export const { useGetCountryCodeQuery } = countryApi;
 export const { useGetWalletQuery, useTopUpWalletMutation } = walletApi;
-export const { useGetGenresQuery, useAddGenreMutation } = genreApi;
+export const { useGetGenresQuery, useAddGenreMutation, useDeleteGenreMutation, useUpdateGenreMutation } = genreApi;

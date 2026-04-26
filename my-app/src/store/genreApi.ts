@@ -19,5 +19,20 @@ export const genreApi = createApi({
       }),
       invalidatesTags: ['genre']
     }),
+    deleteGenre: builder.mutation<void, number>({
+      query: (genreId) => ({
+        url: `/genres/${genreId}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['genre']
+    }),
+    updateGenre: builder.mutation<void, { genreId: number, name: string, description: string }>({
+      query: ({ genreId, name, description }) => ({
+        url: `/genres/${genreId}`,
+        method: 'PUT',
+        body: { name, description },
+      }),
+      invalidatesTags: ['genre']
+    }),
   }),
 });

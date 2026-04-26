@@ -83,6 +83,14 @@ export const gameApi = createApi({
       }),
       invalidatesTags: ['games'],
     }),
+    editGame: builder.mutation<void, { id: number, body: PublishGamePayload }>({
+      query: ({ id, body }) => ({
+        url: `/games/${id}`,
+        method: 'PUT',
+        body: toPublishGameFormData(body),
+      }),
+      invalidatesTags: ['games'],
+    }),
     purchaseGame: builder.mutation<void, { id: number }>({
       query: ({ id }) => ({
         url: `/games/${id}/purchase`,
@@ -101,6 +109,7 @@ export const gameApi = createApi({
     }),
     getDashboard: builder.query<Dashboard, void>({
       query: () => `/games/dashboard`,
+      providesTags: ['games'],
     }),
   }),
 });

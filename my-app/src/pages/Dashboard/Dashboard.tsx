@@ -11,6 +11,7 @@ import {
   Typography,
 } from '@mui/material';
 import {
+  useDeleteGenreMutation,
   useGetDashboardQuery,
   useGetGenresQuery,
   useGetProfileQuery,
@@ -25,22 +26,37 @@ import GamesIcon from '@mui/icons-material/Games';
 import PersonIcon from '@mui/icons-material/Person';
 import MoneyIcon from '@mui/icons-material/Money';
 import AddIcon from '@mui/icons-material/Add';
-import AddGenreModal from './components/AddGenreModal';
+import GenreModal from './components/GenreModal';
+import DeleteIcon from '@mui/icons-material/DeleteOutlined';
+import ConfirmationModal from '../../components/ConfirmationModal';
+import type { Genre } from '../../types/Game';
 
 const Dashboard = () => {
   const [tablesTab, setTablesTab] = useState(0);
   const [addGenreOpen, setAddGenreOpen] = useState(false);
+  const [showDeleteGenreModal, setShowDeleteGenreModal] =
+    useState<Genre | null>(null);
+  const [showEditGenreModal, setShowEditGenreModal] = useState<Genre | null>(
+    null,
+  );
   const { data: dashboard, isFetching: isFetchingDashboard } =
     useGetDashboardQuery();
   const { data: genres, isFetching: isFetchingGenres } = useGetGenresQuery();
+  const [deleteGenre, { isLoading: isDeletingGenre }] =
+    useDeleteGenreMutation();
+
   const { data: user } = useGetProfileQuery();
   const isAdmin = Boolean(user?.roles.includes('Admin'));
   const { data: users, isFetching: isFetchingUsers } = useGetUsersQuery(
     undefined,
     { skip: !isAdmin },
   );
+
   const isFetching =
-    isFetchingDashboard || isFetchingGenres || (isAdmin && isFetchingUsers);
+    isFetchingDashboard ||
+    isFetchingGenres ||
+    (isAdmin && isFetchingUsers) ||
+    isDeletingGenre;
 
   if (isFetching) return <FullScreenProgress />;
 
@@ -79,36 +95,44 @@ const Dashboard = () => {
           value={dashboard?.totals.revenueUah}
         />
       </Grid>
-      <Grid size={12}>
-        <Stack direction="row" spacing={1}>
-          <Button variant="contained" color="primary">
-            Initialize data
-          </Button>
-        </Stack>
-      </Grid>
-      <Grid size={12}>
-        <Stack direction="row" spacing={1}>
-          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-            Genres
-          </Typography>
-          {genres?.map((genre) => (
-            <Chip
-              variant="outlined"
-              color="success"
-              key={genre.genreId}
-              label={genre.name}
-            />
-          ))}
-          <Button
-            variant="contained"
-            color="primary"
-            startIcon={<AddIcon />}
-            onClick={() => setAddGenreOpen(true)}
-          >
-            Add Genre
-          </Button>
-        </Stack>
-      </Grid>
+      {isAdmin && (
+        <Grid size={12}>
+          <Stack direction="row" spacing={1}>
+            <Button variant="contained" color="primary">
+              Initialize data
+            </Button>
+          </Stack>
+        </Grid>
+      )}
+      {isAdmin && (
+        <Grid size={12}>
+          <Stack direction="row" spacing={1}>
+            <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+              Genres
+            </Typography>
+            {genres?.map((genre) => (
+              <Chip
+                variant="outlined"
+                color="info"
+                key={genre.genreId}
+                label={genre.name}
+                deleteIcon={<DeleteIcon />}
+                clickable
+                onClick={() => setShowEditGenreModal(genre)}
+                onDelete={() => setShowDeleteGenreModal(genre)}
+              />
+            ))}
+            <Button
+              variant="contained"
+              color="primary"
+              startIcon={<AddIcon />}
+              onClick={() => setAddGenreOpen(true)}
+            >
+              Add Genre
+            </Button>
+          </Stack>
+        </Grid>
+      )}
       <Grid size={12}>
         <Paper sx={{ width: '100%', overflow: 'hidden' }}>
           <Tabs
@@ -140,9 +164,21 @@ const Dashboard = () => {
           )}
         </Paper>
       </Grid>
-      <AddGenreModal
-        open={addGenreOpen}
-        onClose={() => setAddGenreOpen(false)}
+      <GenreModal open={addGenreOpen} onClose={() => setAddGenreOpen(false)} />
+      <GenreModal
+        open={showEditGenreModal !== null}
+        genre={showEditGenreModal}
+        onClose={() => setShowEditGenreModal(null)}
+      />
+      <ConfirmationModal
+        title={`Delete Genre ${showDeleteGenreModal?.name}?`}
+        description="Are you sure you want to delete this genre?"
+        open={showDeleteGenreModal !== null}
+        onClose={() => setShowDeleteGenreModal(null)}
+        onConfirm={async () => {
+          await deleteGenre(showDeleteGenreModal?.genreId);
+          setShowDeleteGenreModal(null);
+        }}
       />
     </Grid>
   );
