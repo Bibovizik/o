@@ -50,8 +50,8 @@ const NavBar: React.FC = () => {
       icon: <DashboardIcon />,
       path: '/dashboard',
       hide:
-        !user &&
-        !user?.roles.some((role) => role === 'Admin' || role === 'Publisher'),
+        !user ||
+        !(user?.roles.includes('Admin') || user?.roles.includes('Publisher')),
     },
   ];
 
