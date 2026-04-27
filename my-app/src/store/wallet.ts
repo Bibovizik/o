@@ -7,9 +7,9 @@ export const walletApi = createApi({
   tagTypes: ['wallet'],
   baseQuery: baseQueryWithLatency,
   endpoints: (builder) => ({
-    getWallet: builder.query<WalletBalance, void>({
+    getWallet: builder.query<WalletBalance, object>({
       query: () => `/wallet`,
-      providesTags: ['wallet']
+      providesTags: ['wallet'],
     }),
     topUpWallet: builder.mutation<void, TopUpWallet>({
       query: (body) => ({
@@ -17,7 +17,7 @@ export const walletApi = createApi({
         method: 'POST',
         body,
       }),
-      invalidatesTags: ['wallet']
+      invalidatesTags: ['wallet'],
     }),
   }),
 });

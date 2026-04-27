@@ -10,6 +10,7 @@ import {
   Stack,
   Divider,
 } from '@mui/material';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -37,6 +38,14 @@ const Login = () => {
       }}
     >
       <Card sx={{ p: 3 }}>
+        <Button
+          color="secondary"
+          startIcon={<ArrowBackIosIcon />}
+          onClick={() => navigate('/')}
+          sx={{ mb: 2 }}
+        >
+          To Store
+        </Button>
         <Stack
           direction="column"
           spacing={3}
@@ -74,7 +83,7 @@ const Login = () => {
           </Button>
           {error && (
             <Typography color="error" variant="body2">
-              {/* @ts-ignore-next-line */}
+              {/* @ts-expect-error - error is not typed */}
               {error.data?.message ?? 'An error occurred.'}
             </Typography>
           )}

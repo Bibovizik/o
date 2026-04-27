@@ -16,6 +16,7 @@ import {
   useLoginMutation,
   useRegisterMutation,
 } from '../store/api';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 
 const Register = () => {
   const [isPublisher, setIsPublisher] = useState(false);
@@ -67,6 +68,14 @@ const Register = () => {
       }}
     >
       <Card sx={{ p: 3 }}>
+        <Button
+          color="secondary"
+          startIcon={<ArrowBackIosIcon />}
+          onClick={() => navigate('/')}
+          sx={{ mb: 2 }}
+        >
+          To Store
+        </Button>
         <Stack
           direction="column"
           spacing={3}
@@ -136,7 +145,7 @@ const Register = () => {
           </Button>
           {error && (
             <Typography color="error" variant="body2">
-              {/* @ts-ignore-next-line */}
+              {/* @ts-expect-error - error is not typed */}
               {error.data?.message ?? 'An error occurred.'}
             </Typography>
           )}

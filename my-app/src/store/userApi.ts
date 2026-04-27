@@ -32,14 +32,6 @@ export const userApi = createApi({
         body,
       }),
     }),
-    registerPublisher: builder.mutation<void, RegisterPublisher>({
-      query: ({ userNickname, email, password, countryCode }) => ({
-        url: `/auth/register-publisher`,
-        method: 'POST',
-        body: { userNickname, email, password, countryCode },
-      }),
-      invalidatesTags: ['user']
-    }),
     getUsers: builder.query<User[], void>({
       query: () => `/user/getAllUsers`,
       providesTags: ['users']

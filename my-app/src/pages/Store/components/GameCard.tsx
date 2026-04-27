@@ -20,6 +20,7 @@ import GameCardMedia from '../../../components/GameCardMedia';
 import type { Game } from '../../../types/Game';
 import { useState } from 'react';
 import BuyGameModal from '../../../components/BuyGameModal';
+import { useGetProfileQuery } from '../../../store/api';
 
 export interface GameCardProps {
   game: Game;
@@ -28,6 +29,8 @@ export interface GameCardProps {
 
 const GameCard: FC<GameCardProps> = ({ game, isLibrary }) => {
   const navigate = useNavigate();
+  const { data: user } = useGetProfileQuery();
+
   const [showBuyGameModal, setShowBuyGameModal] = useState(false);
   return (
     <Card
@@ -77,6 +80,7 @@ const GameCard: FC<GameCardProps> = ({ game, isLibrary }) => {
           </Typography>
         )}
         {!isLibrary &&
+          user &&
           (game.isOwnedByCurrentUser ? (
             <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
               <CheckIcon color="success" />
@@ -95,17 +99,19 @@ const GameCard: FC<GameCardProps> = ({ game, isLibrary }) => {
               Buy Now
             </Button>
           ))}
-        <Button
-          size="large"
-          variant="outlined"
-          color="secondary"
-          onClick={() =>
-            navigate(`/game/${game.gameId}${isLibrary ? '/library' : ''}`)
-          }
-          startIcon={<GamesIcon />}
-        >
-          See more
-        </Button>
+        {user && (
+          <Button
+            size="large"
+            variant="outlined"
+            color="secondary"
+            onClick={() =>
+              navigate(`/game/${game.gameId}${isLibrary ? '/library' : ''}`)
+            }
+            startIcon={<GamesIcon />}
+          >
+            See more
+          </Button>
+        )}
       </CardActions>
       {showBuyGameModal && (
         <BuyGameModal

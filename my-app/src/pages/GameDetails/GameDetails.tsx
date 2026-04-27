@@ -18,6 +18,7 @@ import GamesIcon from '@mui/icons-material/Games';
 import BuyGameModal from '../../components/BuyGameModal';
 import { useState } from 'react';
 import CheckIcon from '@mui/icons-material/Check';
+import DnsIcon from '@mui/icons-material/Dns';
 
 const GameDetails = () => {
   const { id, isLibrary } = useParams();
@@ -63,7 +64,7 @@ const GameDetails = () => {
               {game?.name}
             </Typography>
             <Grid container spacing={2}>
-              <Grid size={4}>
+              <Grid size={{ xs: 12, sm: 12, md: 4 }}>
                 <GameInfoCard
                   color="secondary.main"
                   icon={<CompanyIcon color="secondary" />}
@@ -71,7 +72,7 @@ const GameDetails = () => {
                   value={game?.publisherName}
                 />
               </Grid>
-              <Grid size={4}>
+              <Grid size={{ xs: 12, sm: 12, md: 4 }}>
                 <GameInfoCard
                   color="warning.main"
                   icon={<DateRangeIcon color="warning" />}
@@ -79,7 +80,7 @@ const GameDetails = () => {
                   value={game?.releaseDate}
                 />
               </Grid>
-              <Grid size={4}>
+              <Grid size={{ xs: 12, sm: 12, md: 4 }}>
                 <GameInfoCard
                   color="success.main"
                   icon={<PersonIcon color="success" />}
@@ -89,6 +90,29 @@ const GameDetails = () => {
               </Grid>
             </Grid>
             <GameDescription description={game?.description} />
+            {game?.systemRequirements && (
+              <Stack spacing={1}>
+                <Stack
+                  direction="row"
+                  spacing={1}
+                  sx={{ alignItems: 'center' }}
+                >
+                  <DnsIcon color="primary" />
+                  <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
+                    System requirements
+                  </Typography>
+                </Stack>
+                <Stack direction="row" spacing={1}>
+                  {Object.entries(game?.systemRequirements ?? {}).map(
+                    ([key, value]) => (
+                      <Typography variant="body1" key={key}>
+                        <strong>{key.toUpperCase()}</strong> {value}
+                      </Typography>
+                    ),
+                  )}
+                </Stack>
+              </Stack>
+            )}
             {game?.genres?.length > 0 && (
               <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap' }}>
                 {game.genres.map((genre) => (

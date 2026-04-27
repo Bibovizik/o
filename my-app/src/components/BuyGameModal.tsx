@@ -18,7 +18,7 @@ import {
 } from '../store/api';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import CloseIcon from '@mui/icons-material/Close';
-import { useGetProfileQuery } from '../store/api';
+
 interface BuyGameModalProps {
   open: boolean;
   onClose: () => void;
@@ -28,8 +28,7 @@ interface BuyGameModalProps {
 const BuyGameModal: FC<BuyGameModalProps> = ({ open, gameId, onClose }) => {
   const { data: game } = useGetGameQuery({ id: gameId! });
   const [purchaseGame] = usePurchaseGameMutation();
-  const { data: wallet } = useGetWalletQuery();
-  const { data: user } = useGetProfileQuery();
+  const { data: wallet } = useGetWalletQuery({});
 
   const handleBuy = async () => {
     await purchaseGame({ id: gameId! });

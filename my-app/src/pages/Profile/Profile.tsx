@@ -14,23 +14,17 @@ import {
   Table,
 } from '@mui/material';
 import type { ChipProps } from '@mui/material';
-import type { Role } from '../../types/User';
 import { useGetProfileQuery, useGetWalletQuery } from '../../store/api';
 import TopUpWalletModal from './TopUpWalletModal';
 import ChangeCountryModal from './ChangeCountryModal';
 import { useState } from 'react';
 import MoneyIcon from '@mui/icons-material/Money';
 import PublicIcon from '@mui/icons-material/Public';
-
-export const roleToColor: Record<Role, string> = {
-  Publisher: 'success',
-  User: 'info',
-  Admin: 'warning',
-};
+import roleToColor from './roleToColor';
 
 const Profile = () => {
   const { data: user } = useGetProfileQuery();
-  const { data: wallet } = useGetWalletQuery();
+  const { data: wallet } = useGetWalletQuery({});
   const [showTopUpWalletModal, setShowTopUpWalletModal] = useState(false);
   const [showChangeCountryModal, setShowChangeCountryModal] = useState(false);
 

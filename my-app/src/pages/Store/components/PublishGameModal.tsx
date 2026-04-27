@@ -1,6 +1,6 @@
 import type { FC } from 'react';
 import { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import {
   Box,
   Modal,
@@ -10,6 +10,8 @@ import {
   Button,
   IconButton,
   CircularProgress,
+  TextField,
+  MenuItem,
 } from '@mui/material';
 import {
   useEditGameMutation,
@@ -26,6 +28,7 @@ import type {
   GamePrice,
   Genre,
   PublishGameFormValues,
+  SystemRequirements,
 } from '../../../types/Game';
 import GameIcon from '@mui/icons-material/Games';
 import {
@@ -53,6 +56,10 @@ const defaultFormValues: PublishGameFormValues = {
   mostOneTimePlayers: '',
   image: undefined,
   genreIds: [],
+  systemRequirementsOs: '',
+  systemRequirementsCpu: '',
+  systemRequirementsGpu: '',
+  systemRequirementsRam: '',
   priceOverrides: {
     US: 0,
     GB: 0,
@@ -77,6 +84,17 @@ const buildFormValuesFromGame = (
     game.releaseDate.length >= 10
       ? game.releaseDate.slice(0, 10)
       : game.releaseDate;
+
+  let systemReqs: Partial<SystemRequirements> | undefined;
+  try {
+    const parsed = game.systemRequirements;
+    if (parsed && typeof parsed === 'object') {
+      systemReqs = parsed as Partial<SystemRequirements>;
+    }
+  } catch {
+    // ignore non-JSON system requirements
+  }
+
   return {
     name: game.name,
     releaseDate: release,
@@ -85,6 +103,18 @@ const buildFormValuesFromGame = (
     mostOneTimePlayers: String(game.mostOneTimePlayers),
     image: undefined,
     genreIds,
+    systemRequirementsOs:
+      systemReqs?.os === 'Windows' ||
+      systemReqs?.os === 'MacOS' ||
+      systemReqs?.os === 'Linux'
+        ? systemReqs.os
+        : '',
+    systemRequirementsCpu: systemReqs?.cpu ?? '',
+    systemRequirementsGpu: systemReqs?.gpu ?? '',
+    systemRequirementsRam:
+      typeof systemReqs?.ram === 'number' && Number.isFinite(systemReqs.ram)
+        ? String(systemReqs.ram)
+        : '',
     priceOverrides: gamePrices
       ?.filter((price) => price.marketCode !== 'UA')
       .reduce(
@@ -144,6 +174,26 @@ const PublishGameModal: FC<PublishGameModalProps> = ({
       .map(([marketCode, price]) => ({ marketCode, amount: Number(price) }))
       .filter((row) => Number.isFinite(row.amount) && row.amount > 0);
 
+    const systemRequirementsObj: Partial<SystemRequirements> = {};
+    if (data.systemRequirementsOs)
+      systemRequirementsObj.os = data.systemRequirementsOs;
+    if (data.systemRequirementsCpu?.trim())
+      systemRequirementsObj.cpu = data.systemRequirementsCpu.trim();
+    if (data.systemRequirementsGpu?.trim())
+      systemRequirementsObj.gpu = data.systemRequirementsGpu.trim();
+    const ramNum = Number(data.systemRequirementsRam);
+    if (
+      data.systemRequirementsRam?.trim() &&
+      Number.isFinite(ramNum) &&
+      ramNum > 0
+    ) {
+      systemRequirementsObj.ram = ramNum;
+    }
+    const systemRequirementsJson =
+      Object.keys(systemRequirementsObj).length > 0
+        ? JSON.stringify(systemRequirementsObj)
+        : undefined;
+
     const body = {
       name: data.name,
       releaseDate: data.releaseDate,
@@ -158,6 +208,7 @@ const PublishGameModal: FC<PublishGameModalProps> = ({
       ...(data.genreIds.length > 0
         ? { genreIdsJson: JSON.stringify(data.genreIds) }
         : {}),
+      ...(systemRequirementsJson ? { systemRequirementsJson } : {}),
     };
 
     if (isEdit && editingGameId != null) {
@@ -226,6 +277,78 @@ const PublishGameModal: FC<PublishGameModalProps> = ({
               </Grid>
               <Grid size={12}>
                 <PublishGameGenresField control={control} />
+              </Grid>
+              <Grid size={12}>
+                <Stack direction="column" spacing={2}>
+                  <Typography variant="body1">
+                    System requirements (optional)
+                  </Typography>
+                  <Grid container spacing={2}>
+                    <Grid size={6}>
+                      <Controller
+                        control={control}
+                        name="systemRequirementsOs"
+                        render={({ field }) => (
+                          <TextField
+                            {...field}
+                            select
+                            fullWidth
+                            label="OS"
+                            value={field.value ?? ''}
+                          >
+                            <MenuItem value="">Not specified</MenuItem>
+                            <MenuItem value="Windows">Windows</MenuItem>
+                            <MenuItem value="MacOS">MacOS</MenuItem>
+                            <MenuItem value="Linux">Linux</MenuItem>
+                          </TextField>
+                        )}
+                      />
+                    </Grid>
+                    <Grid size={6}>
+                      <Controller
+                        control={control}
+                        name="systemRequirementsRam"
+                        render={({ field }) => (
+                          <TextField
+                            {...field}
+                            fullWidth
+                            label="RAM (GB)"
+                            inputMode="numeric"
+                            value={field.value ?? ''}
+                          />
+                        )}
+                      />
+                    </Grid>
+                    <Grid size={6}>
+                      <Controller
+                        control={control}
+                        name="systemRequirementsCpu"
+                        render={({ field }) => (
+                          <TextField
+                            {...field}
+                            fullWidth
+                            label="CPU"
+                            value={field.value ?? ''}
+                          />
+                        )}
+                      />
+                    </Grid>
+                    <Grid size={6}>
+                      <Controller
+                        control={control}
+                        name="systemRequirementsGpu"
+                        render={({ field }) => (
+                          <TextField
+                            {...field}
+                            fullWidth
+                            label="GPU"
+                            value={field.value ?? ''}
+                          />
+                        )}
+                      />
+                    </Grid>
+                  </Grid>
+                </Stack>
               </Grid>
               <Grid size={12}>
                 <Stack direction="column" spacing={2}>

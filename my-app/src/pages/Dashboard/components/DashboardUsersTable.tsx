@@ -3,7 +3,7 @@ import { Chip, Paper, Stack } from '@mui/material';
 import type { ChipProps } from '@mui/material';
 import { DataGrid, type GridColDef } from '@mui/x-data-grid';
 import type { User } from '../../../types/User';
-import { roleToColor } from '../../Profile/Profile';
+import roleToColor from '../../Profile/roleToColor';
 import DeleteUser from './DeleteUser';
 
 export interface DashboardUsersTableProps {

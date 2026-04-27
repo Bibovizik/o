@@ -22,8 +22,8 @@ export interface RegisterUser {
 }
 
 export interface RegisterPublisher extends RegisterUser {
-  publisherName: string;
-  website: string;
+  publisherName?: string;
+  website?: string;
 }
 
 export interface WalletBalance {

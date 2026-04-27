@@ -20,7 +20,7 @@ export interface Game {
   releaseDate: string;
   publisherName: string;
   publisher: string;
-  systemRequirements: string;
+  systemRequirements: SystemRequirements;
   genres: GameGenre[];
   mostOneTimePlayers: number;
   rating: number;
@@ -60,6 +60,10 @@ export type PublishGameFormValues = {
   image: File | undefined;
   priceOverrides?: Record<string, number>;
   genreIds: number[];
+  systemRequirementsOs?: SystemRequirements['os'] | '';
+  systemRequirementsCpu?: string;
+  systemRequirementsGpu?: string;
+  systemRequirementsRam?: string;
 };
 
 export interface Dashboard {
@@ -89,6 +93,13 @@ export interface Genre {
   genreId: number;
   name: string;
   description: string;
+}
+
+export interface SystemRequirements {
+  os: 'Windows' | 'MacOS' | 'Linux';
+  cpu: string;
+  gpu: string;
+  ram: number;
 }
 
 export interface GamePrice {

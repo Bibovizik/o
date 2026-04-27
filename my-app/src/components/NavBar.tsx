@@ -1,6 +1,5 @@
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth';
 import {
   Button,
   AppBar,
@@ -15,11 +14,16 @@ import { useNavigate } from 'react-router-dom';
 import StoreIcon from '@mui/icons-material/Store';
 import GamesIcon from '@mui/icons-material/Games';
 import Logout from '@mui/icons-material/Logout';
-import { useGetWalletQuery, useLogoutMutation } from '../store/api';
+import {
+  useGetProfileQuery,
+  useGetWalletQuery,
+  useLogoutMutation,
+} from '../store/api';
 import DashboardIcon from '@mui/icons-material/Dashboard';
+import LoginIcon from '@mui/icons-material/Login';
 
 const NavBar: React.FC = () => {
-  const { user } = useAuth();
+  const { data: user } = useGetProfileQuery();
 
   const { pathname } = useLocation();
   const navigate = useNavigate();
@@ -31,7 +35,25 @@ const NavBar: React.FC = () => {
         navigate('/login');
       });
   };
-  const { data: wallet } = useGetWalletQuery();
+  const { data: wallet } = useGetWalletQuery({}, { skip: !user });
+
+  const navLinks = [
+    { label: 'Store', icon: <StoreIcon />, path: '/' },
+    {
+      label: 'Library',
+      icon: <GamesIcon />,
+      path: '/library',
+      hide: !user,
+    },
+    {
+      label: 'Dashboard',
+      icon: <DashboardIcon />,
+      path: '/dashboard',
+      hide:
+        !user &&
+        !user?.roles.some((role) => role === 'Admin' || role === 'Publisher'),
+    },
+  ];
 
   if (pathname === '/login' || pathname === '/register') {
     return null;
@@ -48,47 +70,45 @@ const NavBar: React.FC = () => {
             TOKITO
           </Typography>
           <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
-            <NavLink to="/" style={{ color: 'white' }}>
-              <Button
-                startIcon={<StoreIcon />}
-                color={pathname === '/' ? 'secondary' : 'inherit'}
+            {navLinks.map(({ label, icon, path, hide }) =>
+              hide ? null : (
+                <NavLink key={label} to={path} style={{ color: 'white' }}>
+                  <Button
+                    startIcon={icon}
+                    color={pathname === path ? 'secondary' : 'inherit'}
+                  >
+                    {label}
+                  </Button>
+                </NavLink>
+              ),
+            )}
+            {user && (
+              <Avatar
+                sx={{
+                  backgroundColor:
+                    pathname === '/profile' ? 'secondary.main' : 'white',
+                  cursor: 'pointer',
+                }}
+                onClick={() => navigate('/profile')}
               >
-                Store
-              </Button>
-            </NavLink>
-            <NavLink to="/library" style={{ color: 'white' }}>
-              <Button
-                startIcon={<GamesIcon />}
-                color={pathname === '/library' ? 'secondary' : 'inherit'}
-              >
-                Library
-              </Button>
-            </NavLink>
-            <NavLink to="/dashboard" style={{ color: 'white' }}>
-              <Button
-                startIcon={<DashboardIcon />}
-                color={pathname === '/dashboard' ? 'secondary' : 'inherit'}
-              >
-                Dashboard
-              </Button>
-            </NavLink>
-            <Avatar
-              sx={{
-                backgroundColor:
-                  pathname === '/profile' ? 'secondary.main' : 'white',
-                cursor: 'pointer',
-              }}
-              onClick={() => navigate('/profile')}
-            >
-              {user?.userName?.charAt(0)}
-            </Avatar>
+                {user?.userName?.charAt(0)}
+              </Avatar>
+            )}
             <Typography variant="body1" color="warning">
               {wallet?.balances[0]?.availableAmount}{' '}
               {wallet?.balances[0]?.currencyCode}
             </Typography>
-            <IconButton onClick={handleLogout}>
-              <Logout />
-            </IconButton>
+            {user ? (
+              <IconButton onClick={handleLogout}>
+                <Logout />
+              </IconButton>
+            ) : (
+              <NavLink to="/login" style={{ color: 'white' }}>
+                <Button startIcon={<LoginIcon />} color="inherit">
+                  Login
+                </Button>
+              </NavLink>
+            )}
           </Stack>
         </Toolbar>
       </AppBar>

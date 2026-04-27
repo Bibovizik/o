@@ -25,7 +25,6 @@ export const {
   useLogoutMutation,
   useLoginMutation,
   useRegisterMutation,
-  useRegisterPublisherMutation,
 } = userApi;
 export const { useGetCountryCodeQuery } = countryApi;
 export const { useGetWalletQuery, useTopUpWalletMutation } = walletApi;
