@@ -53,6 +53,7 @@ const ChangeCountryModal: FC<ChangeCountryModalProps> = ({ open, onClose }) => {
   const onSubmit = async (data: ChangeCountryFormValues) => {
     await changeCountry({ countryCode: data.countryCode });
     handleClose();
+    window.location.reload();
   };
 
   return (
