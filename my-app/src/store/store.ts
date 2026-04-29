@@ -5,6 +5,7 @@ import { userApi } from './userApi';
 import { countryApi } from './countryApi';
 import { walletApi } from './wallet';
 import { genreApi } from './genreApi';
+import { adminApi } from './admin';
 import alertReducer from './alertSlice';
 
 export const store = configureStore({
@@ -16,6 +17,7 @@ export const store = configureStore({
     [countryApi.reducerPath]: countryApi.reducer,
     [walletApi.reducerPath]: walletApi.reducer,
     [genreApi.reducerPath]: genreApi.reducer,
+    [adminApi.reducerPath]: adminApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
@@ -26,6 +28,7 @@ export const store = configureStore({
         countryApi.middleware,
         walletApi.middleware,
         genreApi.middleware,
+        adminApi.middleware,
       ),
 });
 

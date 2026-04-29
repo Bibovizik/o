@@ -12,6 +12,7 @@ import {
 } from '@mui/material';
 import {
   useDeleteGenreMutation,
+  useInitializeDataMutation,
   useGetDashboardQuery,
   useGetGenresQuery,
   useGetProfileQuery,
@@ -44,7 +45,8 @@ const Dashboard = () => {
   const { data: genres, isFetching: isFetchingGenres } = useGetGenresQuery();
   const [deleteGenre, { isLoading: isDeletingGenre }] =
     useDeleteGenreMutation();
-
+  const [initializeData, { isLoading: isInitializingData }] =
+    useInitializeDataMutation();
   const { data: user } = useGetProfileQuery();
   const isAdmin = Boolean(user?.roles.includes('Admin'));
   const { data: users, isFetching: isFetchingUsers } = useGetUsersQuery(
@@ -98,7 +100,13 @@ const Dashboard = () => {
       {isAdmin && (
         <Grid size={12}>
           <Stack direction="row" spacing={1}>
-            <Button variant="contained" color="primary">
+            <Button
+              disabled={isInitializingData}
+              loading={isInitializingData}
+              variant="contained"
+              color="primary"
+              onClick={() => initializeData()}
+            >
               Initialize data
             </Button>
           </Stack>

@@ -4,6 +4,7 @@ import { genreApi } from './genreApi';
 import { reviewApi } from './reviewApi';
 import { userApi } from './userApi';
 import { walletApi } from './wallet';
+import { adminApi } from './admin';
 
 export type AlertSeverity = 'success' | 'error';
 
@@ -206,6 +207,18 @@ const alertSlice = createSlice({
       state.push({
         id: crypto.randomUUID(),
         message: 'Failed to fetch wallet',
+        severity: 'error',
+      });
+    }).addMatcher(adminApi.endpoints.initializeData.matchFulfilled, (state) => {
+      state.push({
+        id: crypto.randomUUID(),
+        message: 'Data initialized successfully',
+        severity: 'success',
+      });
+    }).addMatcher(adminApi.endpoints.initializeData.matchRejected, (state) => {
+      state.push({
+        id: crypto.randomUUID(),
+        message: 'Failed to initialize data',
         severity: 'error',
       });
     });

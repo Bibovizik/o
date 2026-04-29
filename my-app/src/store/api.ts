@@ -4,6 +4,7 @@ import { reviewApi } from './reviewApi';
 import { userApi } from './userApi';
 import { walletApi } from './wallet';
 import { genreApi } from './genreApi';
+import { adminApi } from './admin';
 
 export const {
   useGetGamesInfiniteQuery,
@@ -29,3 +30,4 @@ export const {
 export const { useGetCountryCodeQuery } = countryApi;
 export const { useGetWalletQuery, useTopUpWalletMutation } = walletApi;
 export const { useGetGenresQuery, useAddGenreMutation, useDeleteGenreMutation, useUpdateGenreMutation } = genreApi;
+export const { useInitializeDataMutation } = adminApi;  
