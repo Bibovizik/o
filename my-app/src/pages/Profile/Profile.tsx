@@ -40,7 +40,7 @@ const Profile = () => {
           </Typography>
         </Stack>
       </Grid>
-      <Grid size={6}>
+      <Grid size={{ xs: 12, sm: 6, md: 6 }}>
         <Card sx={{ p: 3 }}>
           <Stack direction="column" spacing={3}>
             <Typography>
@@ -76,7 +76,7 @@ const Profile = () => {
           </Stack>
         </Card>
       </Grid>
-      <Grid size={6}>
+      <Grid size={{ xs: 12, sm: 6, md: 6 }}>
         <Card
           sx={{
             p: 3,

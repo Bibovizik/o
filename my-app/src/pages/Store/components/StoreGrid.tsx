@@ -81,7 +81,7 @@ const StoreGrid: FC<StoreGridProps> = ({
           )}
         </Stack>
       </Grid>
-      <Grid size={10}>
+      <Grid size={{ xs: 6, sm: 8, md: 8, lg: 9, xl: 10 }}>
         <TextField
           fullWidth
           label="Search games..."
@@ -89,7 +89,7 @@ const StoreGrid: FC<StoreGridProps> = ({
           onChange={(e) => setSearchTerm(e.target.value)}
         />
       </Grid>
-      <Grid size={2}>
+      <Grid size={{ xs: 6, sm: 4, md: 4, lg: 3, xl: 2 }}>
         <FormControl fullWidth>
           <InputLabel id="publish-game-genres-label">Genres</InputLabel>
           <Select

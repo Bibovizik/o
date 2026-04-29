@@ -44,13 +44,13 @@ const GameDetails = () => {
           ]}
         />
       </Grid>
-      <Grid size={6}>
+      <Grid size={{ xs: 12, sm: 12, md: 6 }}>
         <GameCardMedia
           src={`${API_ORIGIN}${game?.imageUrl}`}
           alt={game?.name}
         />
       </Grid>
-      <Grid size={6}>
+      <Grid size={{ xs: 12, sm: 12, md: 6 }}>
         <Stack
           direction="column"
           spacing={2}

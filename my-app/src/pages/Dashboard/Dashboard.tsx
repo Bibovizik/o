@@ -71,7 +71,7 @@ const Dashboard = () => {
           Dashboard
         </Typography>
       </Grid>
-      <Grid size={4}>
+      <Grid size={{ xs: 12, sm: 6, md: 4 }}>
         <GameInfoCard
           color="secondary.main"
           icon={<GamesIcon color="secondary" />}
@@ -79,7 +79,7 @@ const Dashboard = () => {
           value={dashboard?.totals.gameCount}
         />
       </Grid>
-      <Grid size={4}>
+      <Grid size={{ xs: 12, sm: 6, md: 4 }}>
         <GameInfoCard
           color="success.main"
           icon={<PersonIcon color="success" />}
@@ -87,7 +87,7 @@ const Dashboard = () => {
           value={dashboard?.totals.copiesSold}
         />
       </Grid>
-      <Grid size={4}>
+      <Grid size={{ xs: 12, sm: 12, md: 4 }}>
         <GameInfoCard
           color="warning.main"
           icon={<MoneyIcon color="warning" />}

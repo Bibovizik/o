@@ -1,6 +1,6 @@
 import type { FC } from 'react';
 import { useState } from 'react';
-import { Paper } from '@mui/material';
+import { Paper, Tooltip, useMediaQuery, useTheme } from '@mui/material';
 import { DataGrid, type GridColDef } from '@mui/x-data-grid';
 import type { Dashboard } from '../../../types/Game';
 import { useGetProfileQuery } from '../../../store/api';
@@ -16,13 +16,19 @@ type GameRow = Dashboard['games'][number];
 const DashboardGamesTable: FC<DashboardGamesTableProps> = ({ games }) => {
   const { data: user } = useGetProfileQuery();
   const [editingGameId, setEditingGameId] = useState<number | null>(null);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   const gameColumns: GridColDef<GameRow>[] = [
     {
       field: 'gameName',
       headerName: 'Game',
-      flex: 3,
-      minWidth: 200,
+      flex: isMobile ? 1 : 3,
+      renderCell: (params) => (
+        <Tooltip title={params.row.gameName}>
+          <span>{params.row.gameName}</span>
+        </Tooltip>
+      ),
     },
     {
       field: 'copiesSold',
@@ -48,7 +54,7 @@ const DashboardGamesTable: FC<DashboardGamesTableProps> = ({ games }) => {
       headerName: 'Actions',
       align: 'right',
       headerAlign: 'right',
-      flex: 1,
+      flex: isMobile ? 0.5 : 1,
       minWidth: 120,
       sortable: false,
       filterable: false,

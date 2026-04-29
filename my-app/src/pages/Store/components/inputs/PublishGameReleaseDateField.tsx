@@ -18,6 +18,11 @@ const PublishGameReleaseDateField: FC<PublishModalControlProps> = ({
           type="date"
           fullWidth
           label="Release Date"
+          sx={{
+            '& input::-webkit-calendar-picker-indicator': {
+              filter: 'invert(1)',
+            },
+          }}
           slotProps={{ inputLabel: { shrink: true } }}
           error={!!fieldState.error}
           helperText={fieldState.error?.message}

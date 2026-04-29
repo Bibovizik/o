@@ -20,7 +20,7 @@ const GameCardMedia: FC<GameCardMediaProps> = ({ src, alt }) => (
     }}
     sx={{
       borderRadius: 2,
-      height: '400px',
+      height: { xs: '100%', sm: '100%', md: '400px' },
       objectFit: 'cover',
     }}
   />

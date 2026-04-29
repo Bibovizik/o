@@ -1,26 +1,26 @@
-import React from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import {
-  Button,
   AppBar,
   Typography,
   Toolbar,
   Box,
-  Stack,
-  Avatar,
   IconButton,
+  useTheme,
+  useMediaQuery,
+  Drawer,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import StoreIcon from '@mui/icons-material/Store';
 import GamesIcon from '@mui/icons-material/Games';
-import Logout from '@mui/icons-material/Logout';
 import {
   useGetProfileQuery,
   useGetWalletQuery,
   useLogoutMutation,
 } from '../store/api';
 import DashboardIcon from '@mui/icons-material/Dashboard';
-import LoginIcon from '@mui/icons-material/Login';
+import MenuIcon from '@mui/icons-material/Menu';
+import NavBarLinks from './NavBarLinks';
 
 const NavBar: React.FC = () => {
   const { data: user } = useGetProfileQuery();
@@ -37,6 +37,10 @@ const NavBar: React.FC = () => {
   };
   const { data: wallet } = useGetWalletQuery({}, { skip: !user });
 
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+  const [open, setOpen] = useState(false);
   const navLinks = [
     { label: 'Store', icon: <StoreIcon />, path: '/' },
     {
@@ -69,47 +73,43 @@ const NavBar: React.FC = () => {
           >
             TOKITO
           </Typography>
-          <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
-            {navLinks.map(({ label, icon, path, hide }) =>
-              hide ? null : (
-                <NavLink key={label} to={path} style={{ color: 'white' }}>
-                  <Button
-                    startIcon={icon}
-                    color={pathname === path ? 'secondary' : 'inherit'}
-                  >
-                    {label}
-                  </Button>
-                </NavLink>
-              ),
-            )}
-            {user && (
-              <Avatar
-                sx={{
-                  backgroundColor:
-                    pathname === '/profile' ? 'secondary.main' : 'white',
-                  cursor: 'pointer',
-                }}
-                onClick={() => navigate('/profile')}
+
+          {isMobile ? (
+            <>
+              <IconButton
+                size="large"
+                edge="start"
+                color="inherit"
+                aria-label="menu"
+                sx={{ mr: 2 }}
+                onClick={() => setOpen(true)}
               >
-                {user?.userName?.charAt(0)}
-              </Avatar>
-            )}
-            <Typography variant="body1" color="warning">
-              {wallet?.balances[0]?.availableAmount}{' '}
-              {wallet?.balances[0]?.currencyCode}
-            </Typography>
-            {user ? (
-              <IconButton onClick={handleLogout}>
-                <Logout />
+                <MenuIcon />
               </IconButton>
-            ) : (
-              <NavLink to="/login" style={{ color: 'white' }}>
-                <Button startIcon={<LoginIcon />} color="inherit">
-                  Login
-                </Button>
-              </NavLink>
-            )}
-          </Stack>
+              <Drawer anchor="right" open={open} onClose={() => setOpen(false)}>
+                <NavBarLinks
+                  onClose={() => setOpen(false)}
+                  isMobile={isMobile}
+                  navLinks={navLinks}
+                  pathname={pathname}
+                  user={user}
+                  wallet={wallet}
+                  onProfileClick={() => navigate('/profile')}
+                  onLogout={handleLogout}
+                />
+              </Drawer>
+            </>
+          ) : (
+            <NavBarLinks
+              isMobile={isMobile}
+              navLinks={navLinks}
+              pathname={pathname}
+              user={user}
+              wallet={wallet}
+              onProfileClick={() => navigate('/profile')}
+              onLogout={handleLogout}
+            />
+          )}
         </Toolbar>
       </AppBar>
     </Box>
