@@ -1,8 +1,16 @@
 import { useState, type FC } from 'react';
 import {
   Button,
+  Checkbox,
+  Chip,
   CircularProgress,
+  FormControl,
   Grid,
+  InputLabel,
+  ListItemText,
+  MenuItem,
+  OutlinedInput,
+  Select,
   Stack,
   TextField,
   Typography,
@@ -14,6 +22,7 @@ import PublishGameModal from './PublishGameModal';
 import FullScreenProgress from '../../../components/FullScreenProgress';
 import type { Game } from '../../../types/Game';
 import { GameCard } from '.';
+import { useGetGenresQuery } from '../../../store/api';
 
 interface StoreGridProps {
   games: Game[];
@@ -24,6 +33,8 @@ interface StoreGridProps {
   hasNextPage: boolean;
   isFetchingNextPage: boolean;
   isError: boolean;
+  selectedGenres: string[];
+  setSelectedGenres: (genres: string[]) => void;
 }
 
 const StoreGrid: FC<StoreGridProps> = ({
@@ -35,9 +46,12 @@ const StoreGrid: FC<StoreGridProps> = ({
   hasNextPage,
   isFetchingNextPage,
   isError,
+  selectedGenres,
+  setSelectedGenres,
 }) => {
   const [showPublishGameForm, setShowPublishGameForm] = useState(false);
   const { data: user } = useGetProfileQuery();
+  const { data: genres } = useGetGenresQuery();
   const isPublisher = user?.roles.includes('Publisher');
 
   const location = useLocation();
@@ -67,13 +81,50 @@ const StoreGrid: FC<StoreGridProps> = ({
           )}
         </Stack>
       </Grid>
-      <Grid size={12}>
+      <Grid size={10}>
         <TextField
           fullWidth
           label="Search games..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
+      </Grid>
+      <Grid size={2}>
+        <FormControl fullWidth>
+          <InputLabel id="publish-game-genres-label">Genres</InputLabel>
+          <Select
+            fullWidth
+            value={selectedGenres}
+            renderValue={(selected) => selected.join(', ')}
+            multiple
+            input={<OutlinedInput label="Genres" />}
+            onChange={(e) => {
+              setSelectedGenres(e.target.value as string[]);
+            }}
+          >
+            {genres?.map((genre) => (
+              <MenuItem key={genre.genreId} value={genre.name}>
+                <Checkbox checked={selectedGenres.includes(genre.name)} />
+                <ListItemText primary={genre.name} />
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </Grid>
+      <Grid size={12}>
+        <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap' }}>
+          {selectedGenres.map((genre) => (
+            <Chip
+              key={genre}
+              variant="outlined"
+              color="info"
+              label={genre}
+              onDelete={() =>
+                setSelectedGenres(selectedGenres.filter((g) => g !== genre))
+              }
+            />
+          ))}
+        </Stack>
       </Grid>
       <Grid container spacing={2} size={12}>
         {isFetching && <FullScreenProgress />}

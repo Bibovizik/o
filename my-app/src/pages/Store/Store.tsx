@@ -9,6 +9,7 @@ import StoreGrid from './components/StoreGrid';
 const Store = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const debouncedSearchTerm = useDebounce(searchTerm);
+  const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
 
   const {
     data,
@@ -18,7 +19,10 @@ const Store = () => {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useGetGamesInfiniteQuery({ name: debouncedSearchTerm });
+  } = useGetGamesInfiniteQuery({
+    name: debouncedSearchTerm,
+    genres: selectedGenres,
+  });
 
   const games = data?.pages.flatMap((page) => page.items) ?? [];
 
@@ -36,6 +40,8 @@ const Store = () => {
       hasNextPage={Boolean(hasNextPage)}
       isFetchingNextPage={isFetchingNextPage}
       isError={isError}
+      selectedGenres={selectedGenres}
+      setSelectedGenres={setSelectedGenres}
     />
   );
 };

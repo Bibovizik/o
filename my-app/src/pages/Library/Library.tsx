@@ -6,6 +6,8 @@ import useFetchNextPage from '../../hooks/useFetchNextPage';
 
 const Library = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
+
   const {
     data,
     isFetching,
@@ -16,6 +18,7 @@ const Library = () => {
     isFetchingNextPage,
   } = useGetGamesInfiniteQuery({
     isLibrary: true,
+    genres: selectedGenres,
   });
 
   const games = data?.pages.flatMap((page) => page.items) ?? [];
@@ -38,6 +41,8 @@ const Library = () => {
       hasNextPage={Boolean(hasNextPage)}
       isFetchingNextPage={isFetchingNextPage}
       isError={isError}
+      selectedGenres={selectedGenres}
+      setSelectedGenres={setSelectedGenres}
     />
   );
 };

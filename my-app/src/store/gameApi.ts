@@ -37,9 +37,9 @@ export const gameApi = createApi({
   tagTypes: ['games'],
   baseQuery: baseQueryWithLatency,
   endpoints: (builder) => ({
-    getGames: builder.infiniteQuery<{ items: Game[], totalCount: number, page: number, totalPages: number }, { name?: string, isLibrary?: boolean }, number>({
+    getGames: builder.infiniteQuery<{ items: Game[], totalCount: number, page: number, totalPages: number }, { name?: string, isLibrary?: boolean, genres?: string[] }, number>({
       query: (props) => {
-        const { pageParam, queryArg: { name, isLibrary } } = props;
+        const { pageParam, queryArg: { name, isLibrary, genres } } = props;
         const page = typeof pageParam === 'number' ? pageParam : 1;
         const pageSize = PAGE_SIZE;
         const isSpecified = true;
@@ -48,6 +48,7 @@ export const gameApi = createApi({
         // application consistency: lowercase query params
         params.set('page', String(page));
         params.set('pageSize', String(pageSize));
+        params.set('genre', genres?.join(',') ?? '');
         params.set('isSpecified', String(isSpecified));
 
         if (name) {
