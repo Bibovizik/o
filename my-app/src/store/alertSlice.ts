@@ -4,7 +4,7 @@ import { genreApi } from './genreApi';
 import { reviewApi } from './reviewApi';
 import { userApi } from './userApi';
 import { walletApi } from './wallet';
-import { adminApi } from './admin';
+import { adminApi } from './adminApi';
 
 export type AlertSeverity = 'success' | 'error';
 

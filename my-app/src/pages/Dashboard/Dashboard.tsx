@@ -12,7 +12,6 @@ import {
 } from '@mui/material';
 import {
   useDeleteGenreMutation,
-  useInitializeDataMutation,
   useGetDashboardQuery,
   useGetGenresQuery,
   useGetProfileQuery,
@@ -31,6 +30,7 @@ import GenreModal from './components/GenreModal';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import ConfirmationModal from '../../components/ConfirmationModal';
 import type { Genre } from '../../types/Game';
+import DashboardInitilizeData from './components/DashboardInitilizeData';
 
 const Dashboard = () => {
   const [tablesTab, setTablesTab] = useState(0);
@@ -45,8 +45,7 @@ const Dashboard = () => {
   const { data: genres, isFetching: isFetchingGenres } = useGetGenresQuery();
   const [deleteGenre, { isLoading: isDeletingGenre }] =
     useDeleteGenreMutation();
-  const [initializeData, { isLoading: isInitializingData }] =
-    useInitializeDataMutation();
+
   const { data: user } = useGetProfileQuery();
   const isAdmin = Boolean(user?.roles.includes('Admin'));
   const { data: users, isFetching: isFetchingUsers } = useGetUsersQuery(
@@ -99,17 +98,7 @@ const Dashboard = () => {
       </Grid>
       {isAdmin && (
         <Grid size={12}>
-          <Stack direction="row" spacing={1}>
-            <Button
-              disabled={isInitializingData}
-              loading={isInitializingData}
-              variant="contained"
-              color="primary"
-              onClick={() => initializeData()}
-            >
-              Initialize data
-            </Button>
-          </Stack>
+          <DashboardInitilizeData />
         </Grid>
       )}
       {isAdmin && (

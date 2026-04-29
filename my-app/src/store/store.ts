@@ -5,7 +5,7 @@ import { userApi } from './userApi';
 import { countryApi } from './countryApi';
 import { walletApi } from './wallet';
 import { genreApi } from './genreApi';
-import { adminApi } from './admin';
+import { adminApi } from './adminApi';
 import alertReducer from './alertSlice';
 
 export const store = configureStore({

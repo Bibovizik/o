@@ -6,17 +6,18 @@ export const adminApi = createApi({
   tagTypes: ['admin'],
   baseQuery: baseQueryWithLatency,
   endpoints: (builder) => ({
-    initializeData: builder.mutation<void, void>({
-      query: () => ({
+    initializeData: builder.mutation<void, { testUserCount: number, maxPurchasesPerUser: number, maxReviewsPerUser: number, }>({
+      query: ({ testUserCount, maxPurchasesPerUser, maxReviewsPerUser }) => ({
         url: '/admin/data-initialization',
         method: 'POST',
         body: {
-          testUserCount: 200,
-          maxPurchasesPerUser: 15,
-          maxReviewsPerUser: 10,
+          testUserCount,
+          maxPurchasesPerUser,
+          maxReviewsPerUser,
           seedFilePath: "Data/Seed/initial-catalog.json"
         },
-      })
+      }),
+      invalidatesTags: ['admin'],
     }),
   }),
 });

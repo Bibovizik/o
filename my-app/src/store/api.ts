@@ -4,7 +4,7 @@ import { reviewApi } from './reviewApi';
 import { userApi } from './userApi';
 import { walletApi } from './wallet';
 import { genreApi } from './genreApi';
-import { adminApi } from './admin';
+import { adminApi } from './adminApi';
 
 export const {
   useGetGamesInfiniteQuery,
